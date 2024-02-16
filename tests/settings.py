@@ -22,7 +22,7 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = []  # type: ignore
 
-LOCAL_APPS = ["django_web_shell", "tests"]
+LOCAL_APPS = ["django_web_repl", "tests"]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 

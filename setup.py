@@ -14,18 +14,18 @@ def get_version(*file_paths):
     raise RuntimeError("Unable to find version string.")
 
 
-version = get_version("django_web_shell", "__init__.py")
+version = get_version("django_web_repl", "__init__.py")
 
 readme = open("README.md").read()
 
 setup(
-    name="django-web-shell",
+    name="django-web-repl",
     version=version,
     description="""A Django Web shell""",
     long_description=readme,
     author="Dani Hodovic",
     author_email="you@example.com",
-    url="https://github.com/danihodovic/django-web-shell",
+    url="https://github.com/danihodovic/django-web-repl",
     packages=find_packages(),
     include_package_data=True,
     install_requires=[],

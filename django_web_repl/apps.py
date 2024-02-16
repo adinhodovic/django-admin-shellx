@@ -1,12 +1,12 @@
 from django.apps import AppConfig
 
 
-class DjangoWebShellConfig(AppConfig):
-    name = 'django_web_shell'
+class DjangoWebRepl(AppConfig):
+    name = "django_web_repl"
 
     def ready(self):
         try:
             # pylint: disable=unused-import
-            import django_web_shell.signals
+            import django_web_repl.signals
         except ImportError:
             pass

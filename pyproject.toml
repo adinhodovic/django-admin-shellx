@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "django-web-shell"
+name = "django-web-repl"
 version = "0.0.1"
 description = ""
 authors = ["Dani Hodovic <you@example.com>"]
