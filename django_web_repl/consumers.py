@@ -11,15 +11,28 @@ import termios
 import threading
 
 from channels.generic.websocket import WebsocketConsumer
+from django.conf import settings
 
 
 class TerminalConsumer(WebsocketConsumer):
     child_pid = None
     fd = None
     shell = None
+    user = None
 
     def connect(self):
         self.accept()
+
+        self.user = self.scope["user"]
+
+        if not self.user or not self.user.is_authenticated:
+            self.close(4401)
+            return
+
+        if getattr(settings, "DJANGO_WEB_REPL_SUPERUSER_ONLY", False):
+            if not self.user.is_superuser:
+                self.close(4403)
+                return
 
         if self.child_pid is not None:
             return

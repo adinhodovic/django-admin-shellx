@@ -15,6 +15,7 @@
 }
 
 .djw_terminal {
+  hidden: false;
   width: 100%;
 }
 

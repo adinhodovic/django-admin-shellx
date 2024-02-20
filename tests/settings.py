@@ -95,3 +95,5 @@ WEBPACK_LOADER = {
         "IGNORE": [r".+\.hot-update.js", r".+\.map"],
     }
 }
+
+DJANGO_WEB_REPL_SUPERUSER_ONLY = True
