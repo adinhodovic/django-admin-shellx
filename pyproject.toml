@@ -1,20 +1,22 @@
 [tool.poetry]
 name = "django-web-repl"
 version = "0.0.1"
-description = ""
-authors = ["Dani Hodovic <you@example.com>"]
+description = "A Django Web shell"
+authors = ["Adin Hodovic <hodovicadin@gmail.com>"]
 license = "MIT"
 
 # Remember to run `poetry update` instead of `poetry install` on the first go!
 [tool.poetry.dependencies]
-python = ">=3.9"
-Django = ">=4.*"
-channels = "^4.0.0"
+python = "^3.9 || ^3.10 || ^3.11"
+Django = ">=4.* || >=5.*"
+channels = { extras = ["daphne"], version = "^4.0.0" }
+channels-redis = "^4.2.0"
 
 [tool.poetry.group.dev.dependencies]
 django-extensions = "^3.2.3"
 pytest = "^8.0.0"
 pytest-django = "^4.8.0"
+django-webpack-loader = "^3.0.1"
 black = "^24.2.0"
 mypy = "^1.8.0"
 mypy-extensions = "^1.0.0"
@@ -23,8 +25,74 @@ pytest-cov = "^4.1.0"
 django-coverage-plugin = "^3.1.0"
 pylint = "^3.0.3"
 ptpython = "^3.0.26"
-channels = {extras = ["daphne"], version = "^4.0.0"}
+pylint-django = "^2.5.5"
+djlint = "^1.34.1"
+pudb = "^2024.1"
+werkzeug = "^3.0.1"
 
 [build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+addopts = "--ds=tests.settings --reuse-db --pdbcls=pudb.debugger:Debugger"
+python_files = "tests.py test_*.py"
+norecursedirs = ".git */migrations/* */static/* venv .venv .poetry .virtualenv node_modules"
+
+[tool.black]
+skip_numeric_underscore_normalization = true
+exclude = ".*(venv|virtualenv|.poetry|migrations|node_modules|.tox)"
+
+[tool.isort]
+skip_glob = "**/migrations/*.py,**/fixtures/*.py,infra/**/*.py"
+# https://github.com/psf/black/issues/251#issuecomment-535187912
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+line_length = 88
+
+[tool.mypy]
+python_version = "3.11"
+check_untyped_defs = true
+ignore_missing_imports = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unused_configs = true
+plugins = ["mypy_django_plugin.main"]
+exclude = [".venv", "migrations.*"]
+
+[tool.django-stubs]
+django_settings_module = "tests.settings"
+
+[tool.pylint.'MASTER']
+load-plugins = "pylint_django"
+ignore = "manage.py"
+
+[tool.pylint.'FORMAT']
+max-line-length = 150
+
+[tool.pylint.'MESSAGES CONTROL']
+disable = "missing-docstring,invalid-name,logging-fstring-interpolation,fixme,duplicate-code"
+
+[tool.pylint.'DESIGN']
+max-parents = 13
+
+[tool.pylint.'SIMILARITIES']
+# Minimum lines number of a similarity.
+min-similarity-lines = 4
+# Ignore comments when computing similarities.
+ignore-comments = "yes"
+# Ignore docstrings when computing similarities.
+ignore-docstrings = "yes"
+# Ignore imports when computing similarities.
+ignore-imports = "yes"
+
+[tool.djlint]
+ignore = "H006,H030,H031"
+profile = "django"
+preserve_blank_lines = true
+use_gitignore = true
+format_css = true
+format_js = true

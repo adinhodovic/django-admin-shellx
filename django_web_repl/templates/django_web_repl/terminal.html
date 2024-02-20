@@ -1,0 +1,36 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'django_web_repl/output/terminal.css' %}">
+{% endblock extrastyle %}
+
+{% block extrahead %}
+{{ block.super }}
+<script type="module" src="{% static 'django_web_repl/output/terminal.js' %}"></script>
+{% endblock extrahead %}
+
+{% block bodyclass %}{{ block.super }} dashboard{% endblock bodyclass %}
+
+{% block nav-breadcrumbs %}{% endblock nav-breadcrumbs %}
+
+{% block nav-sidebar %}{% endblock nav-sidebar %}
+
+{% block content %}
+{{ block.super }}
+<div class="djw_container">
+  <div class="djw_content">
+    <h1>Terminal</h1>
+    <p>Terminal for running commands on the server.</p>
+    <p>Mouse events are supported.</p>
+    <p>CTRL+C should be used for copying (when marking items with the mouse) and CTRL+SHIFT+V should be used for
+      pasting.</p>
+    <p id="djw_status" class="djw_status">Connecting...</p>
+
+    <div class="djw_terminal_container">
+      <div id="djw_terminal" class="djw_terminal"></div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

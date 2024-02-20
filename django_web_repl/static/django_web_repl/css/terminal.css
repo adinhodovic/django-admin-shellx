@@ -1,0 +1,28 @@
+@import "~xterm/css/xterm.css";
+
+.djw_container {
+  display: flex;
+  justify-content: center;
+}
+
+.djw_content {
+  width: 75%;
+}
+
+.djw_terminal_container {
+  display: flex;
+  justify-content: center;
+}
+
+.djw_terminal {
+  width: 100%;
+}
+
+.terminal {
+  padding: 1rem;
+}
+
+/* Override Django default admin content width */
+.dashboard #content {
+  width: unset;
+}

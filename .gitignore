@@ -110,3 +110,7 @@ dmypy.json
 # End of https://www.gitignore.io/api/python
 *.sqlite3
 tests/media
+
+assets/webpack_bundles
+webpack-stats.json
+django_web_repl/static/django_web_repl/output
