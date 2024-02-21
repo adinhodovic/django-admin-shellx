@@ -1,10 +1,14 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, reverse
 
 from django_web_repl.views import TerminalView
 
+from .models import TerminalCommand
 
-class CustomAdminSite(admin.AdminSite):  # pylint: disable=too-few-public-methods
+
+@admin.register(TerminalCommand)
+class TerminalCommandAdmin(admin.ModelAdmin):
+    list_display = ("command", "created_by", "execution_count")
 
     def get_urls(self):
 
@@ -13,25 +17,8 @@ class CustomAdminSite(admin.AdminSite):  # pylint: disable=too-few-public-method
             0,
             path(
                 "terminal/",
-                self.admin_view(TerminalView.as_view()),
+                self.admin_site.admin_view(TerminalView.as_view()),
                 name="terminal",
             ),
         )
         return urls
-
-    def get_app_list(self, request, app_label=None):
-        app_list = [
-            {
-                "name": "Terminal",
-                "app_label": "terminal",
-                "models": [
-                    {
-                        "name": "Terminal",
-                        "object_name": "Terminal",
-                        "admin_url": "/admin/terminal/",
-                        "view_only": True,
-                    }
-                ],
-            }
-        ] + super().get_app_list(request)
-        return app_list

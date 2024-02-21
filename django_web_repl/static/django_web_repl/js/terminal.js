@@ -162,5 +162,83 @@ terminal.attachCustomKeyEventHandler((arg) => {
   return true;
 });
 
+function sendHistory(command, prompt = null) {
+  var commandStripped = null;
+  if (command) {
+    commandStripped = command.trim();
+  }
+  const json_data = JSON.stringify({
+    action: "save_history",
+    data: {
+      command: commandStripped,
+      prompt: prompt,
+    },
+  });
+  console.log(json_data);
+  sendMessage(json_data);
+}
+
+// Sends history on the current line to server
+function extractHistorySend() {
+  // get the current command
+  const currentCommand = terminal._core.buffer.lines
+    .get(terminal._core.buffer.ybase + terminal._core.buffer.y)
+    .translateToString();
+
+  var command = null;
+  var prompt = null;
+  // strip everything before $ or >>>
+  if (currentCommand.startsWith(">>>")) {
+    const match = currentCommand.match(/>>>(.*)/);
+    command = match ? match[1] : null;
+    prompt = "django-shell";
+  } else {
+    const regex = /^(\S+\s+[^$]+\$)\s+(.*)/;
+    const match = currentCommand.match(regex);
+    command = match ? match[2] : null;
+    prompt = "shell";
+  }
+
+  sendHistory(command, prompt);
+}
+
+// Enter to send command history
+terminal.attachCustomKeyEventHandler((arg) => {
+  if (arg.code === "Enter" && arg.type === "keydown") {
+    extractHistorySend();
+    return true;
+  }
+});
+
+function copyTextToClipboard(event) {
+  navigator.clipboard.writeText(event.target.dataset.command);
+}
+
+var copyButtons = document.querySelectorAll("#djw_copy_command");
+copyButtons.forEach((button) => {
+  button.addEventListener("click", copyTextToClipboard);
+});
+
+function executeCommand(event) {
+  const command = event.target.dataset.command;
+  if (command) {
+    terminal.write(command + "\r");
+    const json_data = JSON.stringify({
+      action: "input",
+      data: {
+        message: command + "\r",
+      },
+    });
+
+    sendMessage(json_data);
+    sendHistory(command);
+  }
+}
+
+var executeButtons = document.querySelectorAll("#djw_execute_command");
+executeButtons.forEach((button) => {
+  button.addEventListener("click", executeCommand);
+});
+
 const wait_ms = 50;
 window.onresize = debounce(fitToscreen, wait_ms);

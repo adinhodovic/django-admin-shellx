@@ -14,6 +14,8 @@ ADMIN_URL = "admin/"
 
 DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": "db.sqlite3"}}
 
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
 ROOT_URLCONF = "tests.urls"
 
 DJANGO_APPS = [
@@ -69,8 +71,6 @@ SITE_ID = 1
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     str(APPS_DIR / "static"),
-    str(ROOT_DIR / "node_modules"),
-    str(ROOT_DIR / "assets"),
 ]
 
 MEDIA_URL = "/media/"

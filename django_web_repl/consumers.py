@@ -13,12 +13,28 @@ import threading
 from channels.generic.websocket import WebsocketConsumer
 from django.conf import settings
 
+from .models import TerminalCommand
+
 
 class TerminalConsumer(WebsocketConsumer):
     child_pid = None
     fd = None
     shell = None
     user = None
+    subprocess = None
+    authorized = False
+
+    def save_command_history(self, command, prompt=None):
+        if not command:
+            logging.warning("No command to save")
+            return
+
+        # TODO: Add prompt? prompt=prompt
+        t, _ = TerminalCommand.objects.get_or_create(
+            command=command, created_by=self.user
+        )
+        t.execution_count += 1
+        t.save()
 
     def connect(self):
         self.accept()
@@ -28,6 +44,8 @@ class TerminalConsumer(WebsocketConsumer):
         if not self.user or not self.user.is_authenticated:
             self.close(4401)
             return
+
+        self.authorized = True
 
         if getattr(settings, "DJANGO_WEB_REPL_SUPERUSER_ONLY", False):
             if not self.user.is_superuser:
@@ -84,13 +102,29 @@ class TerminalConsumer(WebsocketConsumer):
         self.subprocess.terminate()
 
     def receive(self, text_data=None, bytes_data=None):
+        if not self.authorized:
+            return
+
+        if not text_data:
+            logging.debug("No data received")
+            return
+
         text_data_json = json.loads(text_data)
-        if text_data_json["action"] == "resize":
+
+        action = text_data_json.get("action")
+
+        if action == "resize":
             self.resize(text_data_json["data"]["rows"], text_data_json["data"]["cols"])
-        elif text_data_json["action"] == "input":
-            message = text_data_json["data"]["message"]
-            self.write_to_pty(message)
-        elif text_data_json["action"] == "kill":
+        elif action in ["input", "save_history"]:
+            print(text_data_json)
+            if action == "input":
+                message = text_data_json["data"]["message"]
+                self.write_to_pty(message)
+            else:
+                self.save_command_history(
+                    text_data_json["data"]["command"], text_data_json["data"]["prompt"]
+                )
+        elif action == "kill":
             self.kill_pty()
             self.send(text_data=json.dumps({"message": "Terminal killed"}))
         else:

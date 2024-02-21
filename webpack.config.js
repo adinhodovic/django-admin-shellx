@@ -6,10 +6,11 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 module.exports = {
   context: __dirname,
   entry: "./django_web_repl/static/django_web_repl/js/terminal",
+  cache: false,
   output: {
     path: path.resolve(
       __dirname,
-      "./django_web_repl/static/django_web_repl/output",
+      "django_web_repl/static/django_web_repl/output",
     ),
     publicPath: "auto", // necessary for CDNs/S3/blob storages
     filename: "terminal.js",
@@ -18,11 +19,7 @@ module.exports = {
     rules: [
       {
         test: /\.css$/i,
-        use: ["css-loader"],
-      },
-      {
-        test: /\.css$/i,
-        use: [MiniCssExtractPlugin.loader, "css-loader"],
+        use: [MiniCssExtractPlugin.loader, "css-loader", "postcss-loader"],
       },
     ],
   },

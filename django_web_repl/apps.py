@@ -3,6 +3,7 @@ from django.apps import AppConfig
 
 class DjangoWebRepl(AppConfig):
     name = "django_web_repl"
+    verbose_name = "Django Web Repl"
 
     def ready(self):
         try:

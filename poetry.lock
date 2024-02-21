@@ -524,6 +524,20 @@ files = [
 Django = ">=3.2"
 
 [[package]]
+name = "django-model-utils"
+version = "4.4.0"
+description = "Django model mixins and utilities"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "django-model-utils-4.4.0.tar.gz", hash = "sha256:7b73179480e4d4a737d0188e7c49da03776bbadedad569a534c4e9f1afc004d4"},
+    {file = "django_model_utils-4.4.0-py3-none-any.whl", hash = "sha256:d57143e8b7345fd4719c5a95d07d7a50f7d11134da6a729aa6b73fb9674bec9d"},
+]
+
+[package.dependencies]
+Django = ">=3.2"
+
+[[package]]
 name = "django-webpack-loader"
 version = "3.0.1"
 description = "Transparently use webpack with django"
@@ -1739,4 +1753,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9 || ^3.10 || ^3.11"
-content-hash = "61c3f88b83324e78be48697c3cd81aba721f0594c395f47915cd7e00b74471ab"
+content-hash = "ec40d16844baa23fc54037352f657d4dad7ee5fbb40c0ee91a5b2eed53c9b403"

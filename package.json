@@ -7,7 +7,8 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "NODE_ENV=development webpack serve"
   },
   "author": "",
   "license": "ISC",
@@ -19,9 +20,22 @@
     "xterm": "^5.3.0"
   },
   "devDependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/line-clamp": "^0.4.4",
+    "@tailwindcss/typography": "^0.5.10",
+    "autoprefixer": "^10.4.17",
     "css-loader": "^6.10.0",
+    "daisyui": "^4.7.2",
     "mini-css-extract-plugin": "^2.8.0",
+    "postcss": "^8.4.35",
+    "postcss-import": "^16.0.1",
+    "postcss-loader": "^8.1.0",
+    "postcss-preset-env": "^9.4.0",
+    "style-loader": "^3.3.4",
+    "tailwindcss": "^3.4.1",
+    "webpack": "^5.90.3",
     "webpack-bundle-tracker": "^3.0.1",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.0.2"
   }
 }
