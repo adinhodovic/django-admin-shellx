@@ -5,7 +5,7 @@ USE_TZ = True
 
 ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent
 # django_wtf/
-APPS_DIR = ROOT_DIR / "django_custom_admin"
+APPS_DIR = ROOT_DIR / "django_admin_shellx"
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "very-secret"
@@ -34,8 +34,8 @@ THIRD_PARTY_APPS = [
 ]  # type: ignore
 
 LOCAL_APPS = [
-    "django_custom_admin_custom_admin.apps.CustomAdminConfig",
-    "django_custom_admin",
+    "django_admin_shellx_custom_admin.apps.CustomAdminConfig",
+    "django_admin_shellx",
     "tests",
 ]
 
@@ -97,3 +97,8 @@ WEBPACK_LOADER = {
 }
 
 DJANGO_ADMIN_SHELLX_SUPERUSER_ONLY = True
+DJANGO_ADMIN_SHELLX_COMMAND = [
+    ["./manage.py", "shell_plus"],
+    ["./manage.py", "shell"],
+    ["/bin/bash"],
+]

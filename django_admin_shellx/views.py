@@ -2,6 +2,7 @@ from logging import warn
 
 from django.conf import settings
 from django.contrib import admin
+from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.views.generic.base import TemplateView
@@ -10,10 +11,12 @@ from .models import TerminalCommand
 
 
 class TerminalView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
-    template_name = "django_custom_admin/terminal.html"
+    template_name = "django_admin_shellx/terminal.html"
 
     def test_func(self):
-        super_user_required = getattr(settings, "DJANGO_ADMIN_SHELLX_SUPERUSER_ONLY", False)
+        super_user_required = getattr(
+            settings, "DJANGO_ADMIN_SHELLX_SUPERUSER_ONLY", False
+        )
         if super_user_required and not self.request.user.is_superuser:
             return False
         return True
@@ -35,8 +38,13 @@ class TerminalView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
             content_type__model="terminalcommand"
         ).order_by("-action_time")[:30]
 
+        user_model = get_user_model()
+        context["user_reverse_url"] = (
+            f"admin:{user_model._meta.app_label}_{user_model._meta.model_name}_change"
+        )
         for log in log_entries:
-            log.user = User.objects.get(id=log.user_id)
+            log.user = user_model.objects.get(id=log.user_id)
+
             tc = TerminalCommand.objects.filter(id=log.object_id).first()
             if tc:
                 log.command = tc

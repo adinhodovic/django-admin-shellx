@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.db.models.base import UniqueConstraint
 from model_utils.models import TimeStampedModel
@@ -7,7 +8,10 @@ class TerminalCommand(TimeStampedModel):
     command = models.CharField(max_length=100)
     prompt = models.CharField(max_length=100, blank=True, null=True)
     created_by = models.ForeignKey(
-        "auth.User", on_delete=models.SET_NULL, null=True, blank=True
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
     favorite = models.BooleanField(default=False)
     execution_count = models.PositiveIntegerField(default=0)

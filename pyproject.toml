@@ -1,9 +1,23 @@
 [tool.poetry]
-name = "django-web-repl"
-version = "0.0.1"
-description = "A Django Web shell"
+name = "django-admin-shellx"
+version = "0.0.8"
+description = "A Django Admin Shell"
 authors = ["Adin Hodovic <hodovicadin@gmail.com>"]
 license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/adinhodovic/django-admin-shellx"
+repository = "https://github.com/adinhodovic/django-admin-shellx"
+documentation = "https://github.com/adinhodovic/django-admin-shellx"
+keywords = ["django", "admin"]
+exclude = [
+  "django_admin_shellx/static/django_admin_shellx/css/terminal.css",
+  "django_admin_shellx/static/django_admin_shellx/js/terminal.js",
+]
+packages = [
+  { include = "django_admin_shellx" },
+  { include = "django_admin_shellx_custom_admin" },
+]
+
 
 # Remember to run `poetry update` instead of `poetry install` on the first go!
 [tool.poetry.dependencies]
@@ -30,6 +44,8 @@ pylint-django = "^2.5.5"
 djlint = "^1.34.1"
 pudb = "^2024.1"
 werkzeug = "^3.0.1"
+pytest-asyncio = "^0.23.5"
+factory-boy = "^3.3.0"
 
 [build-system]
 requires = ["poetry-core"]

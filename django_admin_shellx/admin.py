@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, reverse
 
-from django_custom_admin.views import TerminalView
+from django_admin_shellx.views import TerminalView
 
 from .models import TerminalCommand
 

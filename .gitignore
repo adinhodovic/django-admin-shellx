@@ -113,4 +113,4 @@ tests/media
 
 assets/webpack_bundles
 webpack-stats.json
-django_custom_admin/static/django_custom_admin/output
+django_admin_shellx/static/django_admin_shellx/output/*

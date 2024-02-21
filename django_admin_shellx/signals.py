@@ -1,1 +1,1 @@
-# from django_custom_admin import models
+# from django_admin_shellx import models

@@ -1,5 +1,5 @@
 {
-  "name": "django-web-repl",
+  "name": "Django Admin ShellX",
   "version": "0.0.0",
   "description": "Django Admin Web Terminal",
   "main": "index.js",

@@ -1,13 +1,13 @@
 from django.apps import AppConfig
 
 
-class DjangoWebRepl(AppConfig):
-    name = "django_custom_admin"
-    verbose_name = "Django Web Repl"
+class DjangoAdminShellX(AppConfig):
+    name = "django_admin_shellx"
+    verbose_name = "Django Admin ShellX"
 
     def ready(self):
         try:
             # pylint: disable=unused-import
-            import django_custom_admin.signals
+            import django_admin_shellx.signals
         except ImportError:
             pass

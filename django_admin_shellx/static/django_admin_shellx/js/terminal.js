@@ -11,17 +11,48 @@ const terminal_el = document.getElementById("djw_terminal");
 
 var ws;
 
-const room = Math.floor(Math.random() * 100000) + 1;
+const terminalSession = Math.floor(Math.random() * 100000) + 1;
+
+function setBadgeError(badge) {
+  badge.classList.add("badge-error");
+  badge.classList.remove("badge-info");
+  badge.classList.remove("badge-success");
+}
+
+const djwTest = document.getElementById("djw_test");
+const djw_full_screen_modal = document.getElementById("djw_full_screen_modal");
+
+djwTest.addEventListener("click", () => {
+  djw_full_screen_modal.showModal();
+  document
+    .getElementById("djw_full_screen_modal_content")
+    .appendChild(terminal_el);
+  fitToScreen();
+});
+
+djw_full_screen_modal.addEventListener("close", (_) => {
+  document.getElementById("djw_terminal_container").appendChild(terminal_el);
+  fitToScreen();
+});
 
 function connect() {
+  const protocol = window.location.protocol === "https:" ? "wss" : "ws";
   const url =
-    "ws://" + window.location.host + "/ws/terminal/" + room.toString() + "/";
+    protocol +
+    "://" +
+    window.location.host +
+    "/ws/terminal/" +
+    terminalSession.toString() +
+    "/";
   ws = new WebSocket(url);
 
-  ws.onopen = function (event) {
+  ws.onopen = function (_) {
     status.innerHTML = "Connected";
-    status.style.color = "green";
-    terminal_el.hidden = false;
+    status.classList.add("badge-success");
+    status.classList.remove("badge-info");
+    status.classList.remove("badge-error");
+    terminal_el.classList.remove("invisible");
+    fitToScreen();
   };
 
   ws.onclose = function (event) {
@@ -34,13 +65,20 @@ function connect() {
         " - status code: " +
         code +
         " will not try to reconnect, please ensure to authenticate.";
-      status.style.color = "red";
+      setBadgeError(status);
+      return;
+    }
+
+    if (code === 4030) {
+      status.innerHTML =
+        "Exited terminal" + " will not try to reconnect, restart to reconnect.";
+      setBadgeError(status);
       return;
     }
     status.innerHTML = "Disconnected";
-    status.style.color = "red";
+    setBadgeError(status);
     terminal.clear();
-    terminal_el.hidden = true;
+    terminal_el.classList.add("invisible");
     setTimeout(function () {
       connect();
     }, 1000);
@@ -48,7 +86,7 @@ function connect() {
 
   ws.onerror = function (event) {
     status.innerHTML = "Error";
-    status.style.color = "red";
+    setBadgeError(status);
     ws.close();
   };
 
@@ -103,7 +141,7 @@ function waitForSocketConnection(socket, callback) {
     } else {
       waitForSocketConnection(socket, callback);
     }
-  }, 100); // wait 100 milisecond for the connection...
+  }, 100); // wait 100 milliseconds for the connection...
 }
 
 terminal.onData((data) => {
@@ -127,7 +165,7 @@ function resize(size) {
   sendMessage(json_data);
 }
 
-function fitToscreen() {
+function fitToScreen() {
   fitAddon.fit();
   const dims = { cols: terminal.cols, rows: terminal.rows };
   resize(dims);
@@ -163,7 +201,7 @@ terminal.attachCustomKeyEventHandler((arg) => {
   return true;
 });
 
-function sendHistory(command, prompt = null) {
+function sendHistory(command) {
   var commandStripped = null;
   if (command) {
     commandStripped = command.trim();
@@ -172,40 +210,27 @@ function sendHistory(command, prompt = null) {
     action: "save_history",
     data: {
       command: commandStripped,
-      prompt: prompt,
     },
   });
   sendMessage(json_data);
 }
 
 // Sends history on the current line to server
-function extractHistorySend() {
+function getCurrentCommandSend() {
   // get the current command
   const currentCommand = terminal._core.buffer.lines
     .get(terminal._core.buffer.ybase + terminal._core.buffer.y)
     .translateToString();
 
-  var command = null;
-  var prompt = null;
-  // strip everything before $ or >>>
-  if (currentCommand.startsWith(">>>")) {
-    const match = currentCommand.match(/>>>(.*)/);
-    command = match ? match[1] : null;
-    prompt = "django-shell";
-  } else {
-    const regex = /^(\S+\s+[^$]+\$)\s+(.*)/;
-    const match = currentCommand.match(regex);
-    command = match ? match[2] : null;
-    prompt = "shell";
+  if (currentCommand !== "" || currentCommand !== null) {
+    sendHistory(currentCommand);
   }
-
-  sendHistory(command, prompt);
 }
 
 // Enter to send command history
 terminal.attachCustomKeyEventHandler((arg) => {
   if (arg.code === "Enter" && arg.type === "keydown") {
-    extractHistorySend();
+    getCurrentCommandSend();
     return true;
   }
 });
@@ -243,8 +268,9 @@ commandHistoryTabs.forEach((button) => {
 
 function executeCommand(event) {
   const command = event.target.dataset.command;
+  const prompt = event.target.dataset.prompt;
+
   if (command) {
-    terminal.write(command + "\r");
     const json_data = JSON.stringify({
       action: "input",
       data: {
@@ -253,7 +279,16 @@ function executeCommand(event) {
     });
 
     sendMessage(json_data);
-    sendHistory(command);
+
+    var commandPromped = command;
+    // Add prompt to the command so it looks like it was typed
+    // And django can parse it in the backend
+    if (prompt === "django-shell") {
+      commandPromped = ">>> " + command;
+    } else if (prompt === "shell") {
+      commandPromped = "[adin@adin test]$ " + command;
+    }
+    sendHistory(commandPromped);
   }
 }
 
@@ -263,4 +298,4 @@ executeButtons.forEach((button) => {
 });
 
 const wait_ms = 50;
-window.onresize = debounce(fitToscreen, wait_ms);
+window.onresize = debounce(fitToScreen, wait_ms);

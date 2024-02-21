@@ -4,23 +4,9 @@
 @tailwind components;
 @tailwind utilities;
 
-.djw_container {
-  display: flex;
-  justify-content: center;
-}
-
-.djw_content {
-  width: 75%;
-}
-
-.djw_terminal_container {
-  display: flex;
-  justify-content: center;
-}
-
-.djw_terminal {
-  hidden: false;
-  width: 100%;
+img {
+  /* TODO: Search admin is ruining this */
+  height: 36px !important;
 }
 
 .terminal {
@@ -30,20 +16,4 @@
 /* Override Django default admin content width */
 .dashboard #content {
   width: unset;
-}
-
-.djw_command_tables {
-  display: flex;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  justify-content: space-between;
-}
-
-.djw_command_tables_actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.djw_status {
-  margin-top: 1rem;
 }

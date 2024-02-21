@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  {% include "wagtail_resume/resume_page_head.html" %}
+<style>
+.container {
+  width: 100% !important;
+  max-width: 100%;
+  background: #343A40;
+  margin: 0 auto;
+  padding: 0;
+}
+
+nav.navbar {
+  margin-bottom: 0 !important;
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+  .resume {
+    width: 80%;
+  }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+  .resume {
+    width: 70%;
+  }
+}
+</style>
+</head>
+
+<body>
+  <div class="container">
+    {% include "wagtail_resume/resume_page_body.html" %}
+  </div>
+</body>
+
+</html>
