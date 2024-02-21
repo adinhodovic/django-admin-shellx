@@ -12,6 +12,8 @@ import threading
 
 from channels.generic.websocket import WebsocketConsumer
 from django.conf import settings
+from django.contrib.admin.models import CHANGE, LogEntry
+from django.contrib.contenttypes.models import ContentType
 
 from .models import TerminalCommand
 
@@ -30,11 +32,21 @@ class TerminalConsumer(WebsocketConsumer):
             return
 
         # TODO: Add prompt? prompt=prompt
-        t, _ = TerminalCommand.objects.get_or_create(
+        tc, _ = TerminalCommand.objects.get_or_create(
             command=command, created_by=self.user
         )
-        t.execution_count += 1
-        t.save()
+        tc.execution_count += 1
+        tc.save()
+
+        # Create a log entry for the command
+        LogEntry.objects.log_action(
+            user_id=self.user.id,
+            content_type_id=ContentType.objects.get_for_model(tc).pk,
+            object_id=tc.id,
+            object_repr=str(tc),
+            action_flag=CHANGE,
+            change_message={"changed": {"name": "action", "object": tc.command}},
+        )
 
     def connect(self):
         self.accept()
@@ -47,7 +59,7 @@ class TerminalConsumer(WebsocketConsumer):
 
         self.authorized = True
 
-        if getattr(settings, "DJANGO_WEB_REPL_SUPERUSER_ONLY", False):
+        if getattr(settings, "DJANGO_ADMIN_SHELLX_SUPERUSER_ONLY", False):
             if not self.user.is_superuser:
                 self.close(4403)
                 return
@@ -116,7 +128,6 @@ class TerminalConsumer(WebsocketConsumer):
         if action == "resize":
             self.resize(text_data_json["data"]["rows"], text_data_json["data"]["cols"])
         elif action in ["input", "save_history"]:
-            print(text_data_json)
             if action == "input":
                 message = text_data_json["data"]["message"]
                 self.write_to_pty(message)

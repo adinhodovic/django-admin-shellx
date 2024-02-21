@@ -2,7 +2,9 @@ import { Terminal } from "xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import { SearchAddon } from "@xterm/addon-search";
 import { WebLinksAddon } from "@xterm/addon-web-links";
-import "../css/terminal.css";
+
+// TODO: fix webpack > tailwind > postcss
+// import "../css/terminal.css";
 
 const status = document.getElementById("djw_status");
 const terminal_el = document.getElementById("djw_terminal");
@@ -99,7 +101,6 @@ function waitForSocketConnection(socket, callback) {
         callback();
       }
     } else {
-      console.log("wait for connection...");
       waitForSocketConnection(socket, callback);
     }
   }, 100); // wait 100 milisecond for the connection...
@@ -174,7 +175,6 @@ function sendHistory(command, prompt = null) {
       prompt: prompt,
     },
   });
-  console.log(json_data);
   sendMessage(json_data);
 }
 
@@ -217,6 +217,28 @@ function copyTextToClipboard(event) {
 var copyButtons = document.querySelectorAll("#djw_copy_command");
 copyButtons.forEach((button) => {
   button.addEventListener("click", copyTextToClipboard);
+});
+
+var commandHistoryTabs = document.querySelectorAll("#djw_command_history_tab");
+commandHistoryTabs.forEach((button) => {
+  // Event listener that removes the class tab-active
+  button.addEventListener("click", function (event) {
+    var tab = event.target;
+    var tabs = document.querySelectorAll("#djw_command_history_tab");
+    tabs.forEach((tab) => {
+      tab.classList.remove("tab-active");
+    });
+    var tables = document.querySelectorAll(".djw_command_history_table");
+    tables.forEach((table) => {
+      // Check if table has the id of the table
+      if (table.id === tab.dataset.table) {
+        table.classList.remove("hidden");
+      } else {
+        table.classList.add("hidden");
+      }
+    });
+    tab.classList.add("tab-active");
+  });
 });
 
 function executeCommand(event) {

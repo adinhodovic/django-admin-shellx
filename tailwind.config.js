@@ -2,7 +2,7 @@
 module.exports = {
   // TODO: prefix later if collision
   // prefix: "djw-tw-",
-  content: ["./django_web_repl/**/*.{html,js}"],
+  content: ["./django_custom_admin/**/*.{html,js}"],
   theme: {
     extend: {},
   },

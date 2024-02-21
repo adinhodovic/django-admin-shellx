@@ -1,0 +1,184 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'django_custom_admin/output/terminal.css' %}">
+{% endblock extrastyle %}
+
+{% block extrahead %}
+{{ block.super }}
+<script type="module" src="{% static 'django_custom_admin/output/terminal.js' %}"></script>
+{% endblock extrahead %}
+
+{% block bodyclass %}{{ block.super }} dashboard{% endblock bodyclass %}
+
+{% block nav-breadcrumbs %}{% endblock nav-breadcrumbs %}
+
+{% block nav-sidebar %}{% endblock nav-sidebar %}
+
+{% block content %}
+{{ block.super }}
+<div class="djw_container">
+  <div class="djw_content">
+    <h1>Terminal</h1>
+    <p>Terminal for running commands on the server.</p>
+    <p>Mouse events are supported. CTRL+C should be used for copying (when marking items with the mouse) and
+      CTRL+SHIFT+V should be used for pasting.</p>
+
+    <div class="divider"></div>
+
+    <div class="flex flex-col gap-4">
+      <details class="collapse border collapse-arrow border-base-300" open>
+        <summary class="collapse-title font-bold text-base">Command History</summary>
+        <div class="collapse-content overflow-x-auto h-96">
+          <div role="tablist" class="tabs tabs-lifted">
+            {% if most_used_commands %}
+            <button id="djw_command_history_tab" role="tab" class="tab tab-active"
+              data-table="djw_most_used_commands_table">Most
+              Used Commands</button>
+            {% endif %}
+            {% if favorite_commands %}
+            <button id="djw_command_history_tab" role="tab" class="tab"
+              data-table="djw_favorite_commands_table">Favorite Commands</button>
+            {% endif %}
+            {% if user_commands %}
+            <button id="djw_command_history_tab" role="tab" class="tab" data-table="djw_your_commands_table">Your
+              Commands</button>
+            {% endif %}
+            {% if log_entries %}
+            <button id="djw_command_history_tab" role="tab" class="tab" data-table="djw_log_entries_table">Log
+              entries</button>
+            {% endif %}
+          </div>
+
+          {% if most_used_commands %}
+          <table id="djw_most_used_commands_table" class="table table-sm mt-7 djw_command_history_table ">
+            <tr>
+              <th>Command</th>
+              <th>Favorite</th>
+              <th>Created By</th>
+              <th>Execution Count</th>
+              <th>Actions</th>
+            </tr>
+            {% for command in most_used_commands %}
+            <tr>
+              <td class="font-bold">{{ command.command }}</td>
+              <td>{{ command.favorite }}</td>
+              <td>{{ command.created_by }}</td>
+              <td class="font-bold">{{ command.execution_count }}</td>
+              <td>
+                <div class="djw_command_tables_actions">
+                  <button class="btn btn-sm btn-neutral"
+                    onclick="location.href='{% url 'admin:django_custom_admin_terminalcommand_change' command.id %}'">Edit</button>
+                  <button class="btn btn-sm btn-neutral" id="djw_copy_command"
+                    data-command="{{ command.command }}">Copy</button>
+                  <button class="btn btn-sm btn-neutral" id="djw_execute_command"
+                    data-command="{{ command.command }}">Execute</button>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </table>
+          {% endif %}
+
+          {% if favorite_commands %}
+          <table id="djw_favorite_commands_table" class="table table-sm mt-7 hidden djw_command_history_table">
+            <tr>
+              <th>Command</th>
+              <th>Favorite</th>
+              <th>Created By</th>
+              <th>Execution Count</th>
+              <th>Actions</th>
+            </tr>
+            {% for command in favorite_commands %}
+            <tr>
+              <td class="font-bold">{{ command.command }}</td>
+              <td>{{ command.favorite }}</td>
+              <td>{{ command.created_by }}</td>
+              <td class="font-bold">{{ command.execution_count }}</td>
+              <td>
+                <div class="djw_command_tables_actions">
+                  <button class="btn btn-sm btn-neutral"
+                    onclick="location.href='{% url 'admin:django_custom_admin_terminalcommand_change' command.id %}'">Edit</button>
+                  <button class="btn btn-sm btn-neutral" id="djw_copy_command"
+                    data-command="{{ command.command }}">Copy</button>
+                  <button class="btn btn-sm btn-neutral" id="djw_execute_command"
+                    data-command="{{ command.command }}">Execute</button>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </table>
+          {% endif %}
+
+          {% if user_commands %}
+          <table id="djw_your_commands_table" class="table table-sm mt-7 hidden djw_command_history_table">
+            <tr>
+              <th>Command</th>
+              <th>Favorite</th>
+              <th>Created By</th>
+              <th>Execution Count</th>
+              <th>Actions</th>
+            </tr>
+            {% for command in user_commands %}
+            <tr>
+              <td class="font-bold">{{ command.command }}</td>
+              <td>{{ command.favorite }}</td>
+              <td>{{ command.created_by }}</td>
+              <td class="font-bold">{{ command.execution_count }}</td>
+              <td>
+                <div class="djw_command_tables_actions">
+                  <button class="btn btn-sm btn-neutral"
+                    onclick="location.href='{% url 'admin:django_custom_admin_terminalcommand_change' command.id %}'">Edit</button>
+                  <button class="btn btn-sm btn-neutral" id="djw_copy_command"
+                    data-command="{{ command.command }}">Copy</button>
+                  <button class="btn btn-sm btn-neutral" id="djw_execute_command"
+                    data-command="{{ command.command }}">Execute</button>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </table>
+          {% endif %}
+
+          {% if log_entries %}
+          <table id="djw_log_entries_table" class="table table-sm mt-7 hidden djw_command_history_table">
+            <tr>
+              <th>Action Time</th>
+              <th>User Id</th>
+              <th>Change/Command</th>
+            </tr>
+            {% for entry in log_entries %}
+            <tr>
+              <td>{{ entry.action_time }}</td>
+              <td>
+                <a href="{% url 'admin:auth_user_change' entry.user.id %}">
+                  {{ entry.user.username }}
+                </a>
+              </td>
+              <td>
+                {% if entry.command %}
+                <a href="{% url 'admin:django_custom_admin_terminalcommand_change' entry.command.id %}">
+                  {{ entry.command }}
+                </a>
+                {% else %}
+                {{ entry.change_message }}
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </table>
+          {% endif %}
+        </div>
+    </div>
+
+    <hr>
+
+    <p id="djw_status" class="djw_status">Connecting...</p>
+    <div class="djw_terminal_container">
+      <div id="djw_terminal" class="djw_terminal"></div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

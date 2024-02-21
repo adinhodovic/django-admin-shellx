@@ -8,13 +8,13 @@ class CustomAdminSite(admin.AdminSite):  # pylint: disable=too-few-public-method
         app_list = super().get_app_list(request, app_label)
 
         for app in app_list:
-            if app["app_label"] == "django_web_repl":
+            if app["app_label"] == "django_custom_admin":
                 app["models"].insert(
                     0,
                     {
                         "name": "Terminal",
                         "object_name": "Terminal",
-                        "admin_url": f"{reverse('admin:django_web_repl_terminalcommand_changelist')}terminal/",
+                        "admin_url": f"{reverse('admin:django_custom_admin_terminalcommand_changelist')}terminal/",
                         "view_only": True,
                     },
                 )

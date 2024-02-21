@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("django_web_repl", "0002_alter_terminalcommand_options_and_more"),
+        ("django_custom_admin", "0002_alter_terminalcommand_options_and_more"),
     ]
 
     operations = [

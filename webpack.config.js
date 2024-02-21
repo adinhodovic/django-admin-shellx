@@ -2,15 +2,15 @@ const path = require("path");
 const webpack = require("webpack");
 const BundleTracker = require("webpack-bundle-tracker");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const { warn } = require("console");
 
 module.exports = {
   context: __dirname,
-  entry: "./django_web_repl/static/django_web_repl/js/terminal",
-  cache: false,
+  entry: "./django_custom_admin/static/django_custom_admin/js/terminal",
   output: {
     path: path.resolve(
       __dirname,
-      "django_web_repl/static/django_web_repl/output",
+      "django_custom_admin/static/django_custom_admin/output",
     ),
     publicPath: "auto", // necessary for CDNs/S3/blob storages
     filename: "terminal.js",
@@ -27,6 +27,5 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: "terminal.css",
     }),
-    new BundleTracker({ path: __dirname, filename: "webpack-stats.json" }),
   ],
 };

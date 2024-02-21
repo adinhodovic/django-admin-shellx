@@ -2,7 +2,7 @@ from django.urls import path, re_path
 
 from . import consumers
 
-app_name = "django_web_repl"
+app_name = "django_custom_admin"
 
 urlpatterns = []
 
