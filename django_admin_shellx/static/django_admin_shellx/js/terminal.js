@@ -72,6 +72,8 @@ function connect() {
     if (code === 4030) {
       status.innerHTML =
         "Exited terminal" + " will not try to reconnect, restart to reconnect.";
+      terminal.clear();
+      terminal_el.classList.add("invisible");
       setBadgeError(status);
       return;
     }
