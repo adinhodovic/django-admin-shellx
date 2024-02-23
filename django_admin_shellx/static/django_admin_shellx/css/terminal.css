@@ -1,0 +1,19 @@
+@import "xterm/css/xterm.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+img {
+  /* TODO: Search admin is ruining this */
+  height: 36px !important;
+}
+
+.terminal {
+  padding: 1rem;
+}
+
+/* Override Django default admin content width */
+.dashboard #content {
+  width: unset;
+}
