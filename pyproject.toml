@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-admin-shellx"
-version = "0.0.8"
+version = "0.0.9"
 description = "A Django Admin Shell"
 authors = ["Adin Hodovic <hodovicadin@gmail.com>"]
 license = "MIT"
@@ -12,6 +12,10 @@ keywords = ["django", "admin"]
 exclude = [
   "django_admin_shellx/static/django_admin_shellx/css/terminal.css",
   "django_admin_shellx/static/django_admin_shellx/js/terminal.js",
+]
+include = [
+  "django_admin_shellx/static/django_admin_shellx/output/terminal.js",
+  "django_admin_shellx/static/django_admin_shellx/output/terminal.css",
 ]
 packages = [
   { include = "django_admin_shellx" },
