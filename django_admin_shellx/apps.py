@@ -7,7 +7,7 @@ class DjangoAdminShellX(AppConfig):
 
     def ready(self):
         try:
-            # pylint: disable=unused-import
+            # pylint: disable=unused-import, import-outside-toplevel
             import django_admin_shellx.signals
         except ImportError:
             pass
