@@ -1,5 +1,4 @@
 # yamllint disable rule:line-length rule:truthy
----
 name: Release Drafter
 
 on:
@@ -27,7 +26,7 @@ jobs:
     if: github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
     runs-on: ubuntu-latest
     steps:
-      - uses: release-drafter/release-drafter@v5
+      - uses: release-drafter/release-drafter@v6
         with:
           disable-autolabeler: false
           disable-releaser: true
@@ -47,7 +46,7 @@ jobs:
           echo "PUBLISH_DRAFT=true" >> $GITHUB_ENV
 
       # Drafts your next Release notes
-      - uses: release-drafter/release-drafter@v5
+      - uses: release-drafter/release-drafter@v6
         with:
           disable-autolabeler: true
           disable-releaser: false
