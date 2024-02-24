@@ -1,10 +1,7 @@
-from logging import warn
-
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.models import User
 from django.views.generic.base import TemplateView
 
 from .models import TerminalCommand

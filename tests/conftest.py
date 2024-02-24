@@ -1,8 +1,11 @@
 import pytest
-from channels.testing import WebsocketCommunicator
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User  # pylint: disable=imported-auth-user
 
 from .factories import UserFactory
+
+BASIC_BASH_COMMANDS = [
+    ["env", "-i", "bash", "--norc", "--noprofile"],
+]
 
 
 @pytest.fixture
@@ -12,7 +15,7 @@ def user() -> User:
 
 @pytest.fixture
 @pytest.mark.django_db
-def user_logged_in(client, user):
+def user_logged_in(client, user):  # pylint: disable=redefined-outer-name
     """
     Creates an authenticated user client.
     """
@@ -22,16 +25,7 @@ def user_logged_in(client, user):
 
 @pytest.fixture
 @pytest.mark.django_db
-def superuser_logged_in(user_logged_in):
+def superuser_logged_in(user_logged_in):  # pylint: disable=redefined-outer-name
     user_logged_in.is_superuser = True
     user_logged_in.save()
     return user_logged_in
-
-
-class AuthWebsocketCommunicator(WebsocketCommunicator):
-    def __init__(self, application, path, headers=None, subprotocols=None, user=None):
-        super(AuthWebsocketCommunicator, self).__init__(
-            application, path, headers, subprotocols
-        )
-        if user is not None:
-            self.scope["user"] = user

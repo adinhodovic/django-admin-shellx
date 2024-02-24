@@ -5,6 +5,8 @@ from channels.testing import WebsocketCommunicator
 
 from django_admin_shellx.consumers import TerminalConsumer
 
+from .conftest import BASIC_BASH_COMMANDS
+
 pytestmark = pytest.mark.django_db
 
 
@@ -49,11 +51,6 @@ async def test_websocket_accepts_authenticated_superuser(superuser_logged_in):
     assert response == '{"message": "ls"}'
 
     await communicator.disconnect()
-
-
-BASIC_BASH_COMMANDS = [
-    ["env", "-i", "bash", "--norc", "--noprofile"],
-]
 
 
 @pytest.mark.asyncio
