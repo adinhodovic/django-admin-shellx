@@ -115,6 +115,10 @@ jobs:
           virtualenvs-in-project: true
           installer-parallel: true
 
+      - name: Build JS/CSS deps
+        run: |
+          npm run build
+
       - name: Build Package
         run: poetry build
 
