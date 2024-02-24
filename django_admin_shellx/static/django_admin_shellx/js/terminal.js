@@ -3,7 +3,6 @@ import { FitAddon } from "@xterm/addon-fit";
 import { SearchAddon } from "@xterm/addon-search";
 import { WebLinksAddon } from "@xterm/addon-web-links";
 
-// TODO: fix webpack > tailwind > postcss
 import "../css/terminal.css";
 
 const status = document.getElementById("djw_status");
