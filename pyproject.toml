@@ -50,6 +50,7 @@ pudb = "^2024.1"
 werkzeug = "^3.0.1"
 pytest-asyncio = "^0.23.5"
 factory-boy = "^3.3.0"
+tox = "^4.13.0"
 
 [build-system]
 requires = ["poetry-core"]
@@ -61,7 +62,6 @@ python_files = "tests.py test_*.py"
 norecursedirs = ".git */migrations/* */static/* venv .venv .poetry .virtualenv node_modules"
 
 [tool.black]
-skip_numeric_underscore_normalization = true
 exclude = ".*(venv|virtualenv|.poetry|migrations|node_modules|.tox)"
 
 [tool.isort]
