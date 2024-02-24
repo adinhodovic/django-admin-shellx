@@ -232,7 +232,10 @@ function getCurrentCommandSend() {
 // Enter to send command history
 terminal.attachCustomKeyEventHandler((arg) => {
   if (arg.code === "Enter" && arg.type === "keydown") {
-    getCurrentCommandSend();
+    // Sleep for 1 milliseconds to get the current command
+    // Might cause some issues, remove if so
+    // Needed due to sometimes last letters missing
+    setTimeout(getCurrentCommandSend, 1);
     return true;
   }
 });
