@@ -6,12 +6,9 @@ from channels.testing import WebsocketCommunicator
 
 from django_admin_shellx.consumers import TerminalConsumer
 
+from .conftest import BASIC_BASH_COMMANDS
+
 pytestmark = pytest.mark.django_db
-
-
-BASIC_BASH_COMMANDS = [
-    ["env", "-i", "bash", "--norc", "--noprofile"],
-]
 
 
 @pytest.mark.asyncio
