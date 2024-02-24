@@ -571,17 +571,6 @@ files = [
 Django = ">=3.2"
 
 [[package]]
-name = "django-webpack-loader"
-version = "3.0.1"
-description = "Transparently use webpack with django"
-optional = false
-python-versions = "*"
-files = [
-    {file = "django-webpack-loader-3.0.1.tar.gz", hash = "sha256:51331b33da76688eb4d3bf3ea3bb56434b0c1dfb2dcd88cbfb0a39618f68dd7a"},
-    {file = "django_webpack_loader-3.0.1-py2.py3-none-any.whl", hash = "sha256:d65b48c46e9e02b66255b1459c1e7a6664b4d3a6874b0b1e9d1d92518e6e999c"},
-]
-
-[[package]]
 name = "djlint"
 version = "1.34.1"
 description = "HTML Template Linter and Formatter"
@@ -2011,4 +2000,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9 || ^3.10 || ^3.11"
-content-hash = "8c5770c9de9efb91990c28c38bccb3c400567a99f5e64a864d85922a509e3f09"
+content-hash = "ab3c6a13ad846c6e6642b04261022d83625c1722e3804a20f3b1979e32ecf63f"
