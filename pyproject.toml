@@ -1,3 +1,7 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
 [tool.poetry]
 name = "django-admin-shellx"
 version = "0.0.10"
@@ -51,10 +55,7 @@ werkzeug = "^3.0.1"
 pytest-asyncio = "^0.23.5"
 factory-boy = "^3.3.0"
 tox = "^4.13.0"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+pytest-clarity = "^1.0.1"
 
 [tool.pytest.ini_options]
 addopts = "--ds=tests.settings --reuse-db --pdbcls=pudb.debugger:Debugger"
