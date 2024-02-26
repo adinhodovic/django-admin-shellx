@@ -37,16 +37,18 @@ djwFullScreenModal.addEventListener("close", (_) => {
 });
 
 var ws_port = JSON.parse(document.getElementById("ws_port").textContent);
+var host = window.location.host;
 if (!ws_port) {
   ws_port = "";
 } else {
   ws_port = ":" + ws_port;
+  host = window.location.hostname;
 }
 const protocol = window.location.protocol === "https:" ? "wss" : "ws";
 const url =
   protocol +
   "://" +
-  window.location.hostname +
+  host +
   ws_port +
   "/ws/terminal/" +
   terminalSession.toString() +
