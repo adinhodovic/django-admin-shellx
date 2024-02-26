@@ -2,6 +2,8 @@
 
 A Django Web Shell using Xterm.js and Django Channels.
 
+Note: This package depends on websockets therefore you'll need to use an ASGI application to use it.
+
 ## Features
 
 - Fully responsive terminal using Xterm.js.
@@ -82,7 +84,7 @@ application = ProtocolTypeRouter(
 )
 ```
 
-Note: Daphne replaces runserver to run as a ASGI application. If you are using Daphne, you'll need to import it first in your ASGI application.
+Note: Daphne replaces `runserver` to run as a ASGI application. If you are using Daphne, you'll need to import it first in your ASGI application.
 
 ```bash
 
@@ -101,10 +103,23 @@ The above is optional and only adds a `view` button to the admin that links to t
 
 Head over to the admin and click on the `Terminal` link. You'll be presented with a terminal that you can use to run commands. The default commands are `./manage.py shell_plus`, `./manage.py shell` and `/bin/bash`. You can change the default commands by setting the `DJANGO_ADMIN_SHELLX_COMMAND` setting.
 
-Each command is saved in the database and can be accessed through the admin. You can also add new commands through the admin and favorite existing commands. Each command ran is also saved as a [LogEntry](https://docs.djangoproject.com/en/dev/ref/contrib/admin/#logentry-objects)
+Each command is saved in the database and can be accessed through the admin. You can also add new commands through the admin and favorite existing commands. Each command ran is also saved as a [LogEntry](https://docs.djangoproject.com/en/dev/ref/contrib/admin/#logentry-objects).
 
 ### ASGI Notes
 
+In the guide above `daphne` is used as the ASGI application and this will replace the command `runserver` to run as a ASGI application. In production you'll need to run `daphne` instead of `gunicorn` to use the websockets. An example is shown below:
+
+```bash
+daphne config.asgi:application -b 127.0.0.1 -p 80
+```
+
+Alternatively, you can run your ASGI application on a separate port and run your WSGI application as per default.
+
+```bash
+daphne config.asgi:application -b 127.0.0.1 -p 8001
+./manage.py runserver -p 8000
+
+```
 
 ### Settings
 
