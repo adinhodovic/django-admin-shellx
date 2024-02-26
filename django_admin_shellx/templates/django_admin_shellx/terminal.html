@@ -8,6 +8,7 @@
 
 {% block extrahead %}
 {{ block.super }}
+{{ ws_port|json_script:"ws_port" }}
 <script type="module" src="{% static 'django_admin_shellx/output/terminal.js' %}"></script>
 {% endblock extrahead %}
 
@@ -27,7 +28,7 @@
         <p id="djw_status" class="badge badge-info">Connecting...</p>
 
         <div class="flex gap-4">
-          <button id="djw_test" class="btn btn-sm btn-outline" onclick="djw_full_screen_modal.showModal();">Full
+          <button id="djw_full_screen_modal_btn" class="btn btn-sm btn-outline" onclick="djw_full_screen_modal.showModal();">Full
             Screen</button>
           <dialog id="djw_full_screen_modal" class="modal">
             <div class="modal-box max-w-none max-h-none w-full h-full rounded-none">

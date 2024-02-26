@@ -23,6 +23,9 @@ class TerminalView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         # Add admin site context to the template
         context.update(admin.site.each_context(self.request))
 
+        ws_port = getattr(settings, "DJANGO_ADMIN_SHELLX_WS_PORT", None)
+        context["ws_port"] = ws_port
+
         most_used_commands = TerminalCommand.objects.order_by("-execution_count")[:20]
         favorite_commands = TerminalCommand.objects.filter(favorite=True).order_by(
             "-execution_count"

@@ -18,31 +18,43 @@ function setBadgeError(badge) {
   badge.classList.remove("badge-success");
 }
 
-const djwTest = document.getElementById("djw_test");
-const djw_full_screen_modal = document.getElementById("djw_full_screen_modal");
+const djwFullScreenModalBtn = document.getElementById(
+  "djw_full_screen_modal_btn",
+);
+const djwFullScreenModal = document.getElementById("djw_full_screen_modal");
 
-djwTest.addEventListener("click", () => {
-  djw_full_screen_modal.showModal();
+djwFullScreenModalBtn.addEventListener("click", () => {
+  djwFullScreenModal.showModal();
   document
     .getElementById("djw_full_screen_modal_content")
     .appendChild(terminal_el);
   fitToScreen();
 });
 
-djw_full_screen_modal.addEventListener("close", (_) => {
+djwFullScreenModal.addEventListener("close", (_) => {
   document.getElementById("djw_terminal_container").appendChild(terminal_el);
   fitToScreen();
 });
 
+var ws_port = JSON.parse(document.getElementById("ws_port").textContent);
+if (!ws_port) {
+  ws_port = "";
+} else {
+  ws_port = ":" + ws_port;
+}
+const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+const url =
+  protocol +
+  "://" +
+  window.location.hostname +
+  ws_port +
+  "/ws/terminal/" +
+  terminalSession.toString() +
+  "/";
+
+console.log(url);
+
 function connect() {
-  const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-  const url =
-    protocol +
-    "://" +
-    window.location.host +
-    "/ws/terminal/" +
-    terminalSession.toString() +
-    "/";
   ws = new WebSocket(url);
 
   ws.onopen = function (_) {
