@@ -101,3 +101,4 @@ DJANGO_ADMIN_SHELLX_COMMAND = [
     ["./manage.py", "shell"],
     ["/bin/bash"],
 ]
+DJANGO_ADMIN_SHELLX_WS_PORT = 8001

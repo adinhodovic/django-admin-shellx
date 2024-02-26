@@ -127,3 +127,4 @@ daphne config.asgi:application -b 127.0.0.1 -p 8001
 |------|-------------|------|---------|:--------:|
 | DJANGO_ADMIN_SHELLX_SUPERUSER_ONLY | Allow only SuperUsers to access the admin shellx. | `boolean` | `True` | no |
 | DJANGO_ADMIN_SHELLX_COMMAND | The default commands to use when opening the terminal. | `list[list[str]]` |  [["./manage.py", "shell_plus"], ["./manage.py", "shell"], ["/bin/bash"]] | no |
+| DJANGO_ADMIN_SHELLX_WS_PORT | The port to use for the websocket. | `int` | None | no |
