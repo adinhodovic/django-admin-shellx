@@ -33,8 +33,8 @@ THIRD_PARTY_APPS = [
 ]  # type: ignore
 
 LOCAL_APPS = [
-    "django_admin_shellx_custom_admin.apps.CustomAdminConfig",
     "django_admin_shellx",
+    "django_admin_shellx_custom_admin.apps.CustomAdminConfig",
     "tests",
 ]
 
