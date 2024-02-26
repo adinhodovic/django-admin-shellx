@@ -121,6 +121,8 @@ async def test_command_creates_objects(superuser_logged_in):
     assert terminal_command.created_by_id == superuser_logged_in.id
     assert terminal_command.execution_count == 1
 
+    await communicator.disconnect()
+
 
 @pytest.mark.asyncio
 @pytest.mark.django_db(transaction=True)
@@ -153,3 +155,5 @@ async def test_command_increments_execution_count(superuser_logged_in):
     assert terminal_command.prompt == "django-shell"
     assert terminal_command.created_by_id == superuser_logged_in.id
     assert terminal_command.execution_count == 2
+
+    await communicator.disconnect()
