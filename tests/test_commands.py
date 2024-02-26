@@ -126,7 +126,8 @@ async def test_command_creates_objects(superuser_logged_in):
 
 @pytest.mark.asyncio
 @pytest.mark.django_db(transaction=True)
-async def test_command_increments_execution_count(superuser_logged_in):
+async def test_command_increments_execution_count(settings, superuser_logged_in):
+    settings.DJANGO_ADMIN_SHELLX_COMMANDS = BASIC_BASH_COMMANDS
     communicator = DefaultTimeoutWebsocketCommunicator(
         TerminalConsumer.as_asgi(), "/testws/"
     )
@@ -137,13 +138,13 @@ async def test_command_increments_execution_count(superuser_logged_in):
     # Ensure we go past the initial bash messages returned (shell startup)
     await communicator.receive_from()
 
-    json_data = json.dumps({"action": "save_history", "data": {"command": ">>>ls"}})
+    json_data = json.dumps(
+        {"action": "save_history", "data": {"command": "[adin@adin test]$ ls"}}
+    )
     # Test sending text
     await communicator.send_to(text_data=json_data)
-    await communicator.receive_from()
-
     await communicator.send_to(text_data=json_data)
-    await communicator.receive_from()
+    await communicator.wait(1)
 
     log_entry_count, _ = await get_log_entry()
     terminal_command_count, terminal_command = await get_terminal_command()
@@ -152,7 +153,7 @@ async def test_command_increments_execution_count(superuser_logged_in):
     assert terminal_command_count == 1
 
     assert terminal_command.command == "ls"
-    assert terminal_command.prompt == "django-shell"
+    assert terminal_command.prompt == "shell"
     assert terminal_command.created_by_id == superuser_logged_in.id
     assert terminal_command.execution_count == 2
 
