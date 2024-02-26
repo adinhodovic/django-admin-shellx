@@ -2,6 +2,16 @@
 
 A Django Web Shell using Xterm.js and Django Channels.
 
+## Features
+
+- Fully responsive terminal using Xterm.js.
+- Authentication with Django auth, configurable to allow only superusers.
+- The commands tied to a user.
+- Saves command in a new model and create favorite commands.
+- Accessible through the admin.
+- LogEntry of all commands ran.
+- Filterable command history.
+
 ## Installation
 
 Install the package using pip:
@@ -39,6 +49,7 @@ application = ProtocolTypeRouter(
         ),
     }
 )
+```
 
 If you do not have an ASGI application, you'll need to create one. You can use the `channels` package to do so.:
 
