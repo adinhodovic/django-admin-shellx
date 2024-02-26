@@ -1,4 +1,5 @@
 import pytest
+from channels.testing import WebsocketCommunicator
 from django.contrib.auth.models import User  # pylint: disable=imported-auth-user
 
 from .factories import UserFactory
@@ -29,3 +30,41 @@ def superuser_logged_in(user_logged_in):  # pylint: disable=redefined-outer-name
     user_logged_in.is_superuser = True
     user_logged_in.save()
     return user_logged_in
+
+
+# Increase the timeout for the WebsocketCommunicator
+class DefaultTimeoutWebsocketCommunicator(WebsocketCommunicator):
+    """WebsocketCommunicator that provides a configurable default timeout."""
+
+    timeout = 3
+    """Default timeout to use when one is not supplied."""
+
+    async def connect(self, timeout=None):  # pylint: disable=[signature-differs]
+        """
+        Trigger the connection code.
+
+        On an accepted connection, returns (True, <chosen-subprotocol>)
+        On a rejected connection, returns (False, <close-code>)
+        """
+        if timeout:
+            return await super().connect(timeout=timeout)
+        return await super().connect(timeout=self.timeout)
+
+    async def receive_from(self, timeout=None):  # pylint: disable=[signature-differs]
+        if timeout:
+            return await super().receive_from(timeout=timeout)
+        return await super().receive_from(timeout=self.timeout)
+
+    async def receive_json_from(
+        self, timeout=None
+    ):  # pylint: disable=[signature-differs]
+        if timeout:
+            return await super().receive_json_from(timeout=timeout)
+        return await super().receive_json_from(timeout=self.timeout)
+
+    async def disconnect(
+        self, code=1000, timeout=None
+    ):  # pylint: disable=[signature-differs]
+        if timeout:
+            return await super().disconnect(code=code, timeout=timeout)
+        return await super().disconnect(code=code, timeout=self.timeout)

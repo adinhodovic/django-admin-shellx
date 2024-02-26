@@ -3,13 +3,12 @@ from asyncio.exceptions import CancelledError
 
 import pytest
 from channels.db import database_sync_to_async
-from channels.testing import WebsocketCommunicator
 from django.contrib.admin.models import LogEntry
 
 from django_admin_shellx.consumers import TerminalConsumer
 from django_admin_shellx.models import TerminalCommand
 
-from .conftest import BASIC_BASH_COMMANDS
+from .conftest import BASIC_BASH_COMMANDS, DefaultTimeoutWebsocketCommunicator
 
 pytestmark = pytest.mark.django_db
 
@@ -18,7 +17,9 @@ pytestmark = pytest.mark.django_db
 async def test_settings_custom_command(settings, superuser_logged_in):
     settings.DJANGO_ADMIN_SHELLX_SUPERUSER_ONLY = False
     settings.DJANGO_ADMIN_SHELLX_COMMANDS = BASIC_BASH_COMMANDS
-    communicator = WebsocketCommunicator(TerminalConsumer.as_asgi(), "/testws/")
+    communicator = DefaultTimeoutWebsocketCommunicator(
+        TerminalConsumer.as_asgi(), "/testws/"
+    )
     communicator.scope["user"] = superuser_logged_in
     connected, _ = await communicator.connect()
     assert connected
@@ -33,7 +34,9 @@ async def test_settings_custom_command(settings, superuser_logged_in):
 @pytest.mark.asyncio
 async def test_settings_default_shell_plus(settings, superuser_logged_in):
     settings.DJANGO_ADMIN_SHELLX_SUPERUSER_ONLY = False
-    communicator = WebsocketCommunicator(TerminalConsumer.as_asgi(), "/testws/")
+    communicator = DefaultTimeoutWebsocketCommunicator(
+        TerminalConsumer.as_asgi(), "/testws/"
+    )
     communicator.scope["user"] = superuser_logged_in
     connected, _ = await communicator.connect()
     assert connected
@@ -48,7 +51,9 @@ async def test_settings_default_shell_plus(settings, superuser_logged_in):
 @pytest.mark.asyncio
 async def test_closes_connection_on_exit(settings, superuser_logged_in):
     settings.DJANGO_ADMIN_SHELLX_COMMANDS = BASIC_BASH_COMMANDS
-    communicator = WebsocketCommunicator(TerminalConsumer.as_asgi(), "/testws/")
+    communicator = DefaultTimeoutWebsocketCommunicator(
+        TerminalConsumer.as_asgi(), "/testws/"
+    )
     communicator.scope["user"] = superuser_logged_in
     connected, _ = await communicator.connect()
     assert connected
@@ -86,7 +91,9 @@ def get_terminal_command():
 @pytest.mark.asyncio
 @pytest.mark.django_db(transaction=True)
 async def test_command_creates_objects(superuser_logged_in):
-    communicator = WebsocketCommunicator(TerminalConsumer.as_asgi(), "/testws/")
+    communicator = DefaultTimeoutWebsocketCommunicator(
+        TerminalConsumer.as_asgi(), "/testws/"
+    )
     communicator.scope["user"] = superuser_logged_in
     connected, _ = await communicator.connect()
     assert connected
@@ -118,7 +125,9 @@ async def test_command_creates_objects(superuser_logged_in):
 @pytest.mark.asyncio
 @pytest.mark.django_db(transaction=True)
 async def test_command_increments_execution_count(superuser_logged_in):
-    communicator = WebsocketCommunicator(TerminalConsumer.as_asgi(), "/testws/")
+    communicator = DefaultTimeoutWebsocketCommunicator(
+        TerminalConsumer.as_asgi(), "/testws/"
+    )
     communicator.scope["user"] = superuser_logged_in
     connected, _ = await communicator.connect()
     assert connected

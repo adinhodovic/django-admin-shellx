@@ -1,18 +1,19 @@
 import json
 
 import pytest
-from channels.testing import WebsocketCommunicator
 
 from django_admin_shellx.consumers import TerminalConsumer
 
-from .conftest import BASIC_BASH_COMMANDS
+from .conftest import BASIC_BASH_COMMANDS, DefaultTimeoutWebsocketCommunicator
 
 pytestmark = pytest.mark.django_db
 
 
 @pytest.mark.asyncio
 async def test_websocket_rejects_unauthenticated():
-    communicator = WebsocketCommunicator(TerminalConsumer.as_asgi(), "/testws/")
+    communicator = DefaultTimeoutWebsocketCommunicator(
+        TerminalConsumer.as_asgi(), "/testws/"
+    )
     connected, subprotocol = await communicator.connect()
     assert not connected
     assert subprotocol == 4401
@@ -23,7 +24,9 @@ async def test_websocket_rejects_unauthenticated():
 async def test_websocket_accepts_authenticated_user(settings, user_logged_in):
     settings.DJANGO_ADMIN_SHELLX_SUPERUSER_ONLY = False
 
-    communicator = WebsocketCommunicator(TerminalConsumer.as_asgi(), "/testws/")
+    communicator = DefaultTimeoutWebsocketCommunicator(
+        TerminalConsumer.as_asgi(), "/testws/"
+    )
     communicator.scope["user"] = user_logged_in
     connected, _ = await communicator.connect()
     assert connected
@@ -39,7 +42,9 @@ async def test_websocket_accepts_authenticated_user(settings, user_logged_in):
 
 @pytest.mark.asyncio
 async def test_websocket_accepts_authenticated_superuser(superuser_logged_in):
-    communicator = WebsocketCommunicator(TerminalConsumer.as_asgi(), "/testws/")
+    communicator = DefaultTimeoutWebsocketCommunicator(
+        TerminalConsumer.as_asgi(), "/testws/"
+    )
     communicator.scope["user"] = superuser_logged_in
     connected, _ = await communicator.connect()
     assert connected
@@ -57,7 +62,9 @@ async def test_websocket_accepts_authenticated_superuser(superuser_logged_in):
 async def test_websocket_send_command(settings, superuser_logged_in):
     settings.DJANGO_ADMIN_SHELLX_SUPERUSER_ONLY = False
     settings.DJANGO_ADMIN_SHELLX_COMMANDS = BASIC_BASH_COMMANDS
-    communicator = WebsocketCommunicator(TerminalConsumer.as_asgi(), "/testws/")
+    communicator = DefaultTimeoutWebsocketCommunicator(
+        TerminalConsumer.as_asgi(), "/testws/"
+    )
     communicator.scope["user"] = superuser_logged_in
     connected, _ = await communicator.connect()
     assert connected
