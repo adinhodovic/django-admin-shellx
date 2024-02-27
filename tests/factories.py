@@ -2,8 +2,10 @@ from collections.abc import Sequence
 from typing import Any
 
 from django.contrib.auth import get_user_model
-from factory import Faker, post_generation
+from factory import Faker, SubFactory, post_generation
 from factory.django import DjangoModelFactory
+
+from django_admin_shellx.models import TerminalCommand
 
 
 class UserFactory(DjangoModelFactory):
@@ -31,3 +33,13 @@ class UserFactory(DjangoModelFactory):
     class Meta:
         model = get_user_model()
         django_get_or_create = ["username"]
+
+
+class TerminalCommandFactory(DjangoModelFactory):
+    command = Faker("word")
+    prompt = "django-shell"
+    favorite = False
+    created_by = SubFactory(UserFactory)
+
+    class Meta:
+        model = TerminalCommand
