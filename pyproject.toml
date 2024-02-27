@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "django-admin-shellx"
-version = "0.1.0"
+version = "0.2.0"
 description = "A Django Admin Shell"
 authors = ["Adin Hodovic <hodovicadin@gmail.com>"]
 license = "MIT"
@@ -12,7 +12,22 @@ readme = "README.md"
 homepage = "https://github.com/adinhodovic/django-admin-shellx"
 repository = "https://github.com/adinhodovic/django-admin-shellx"
 documentation = "https://github.com/adinhodovic/django-admin-shellx"
-keywords = ["django", "admin"]
+keywords = ["django", "admin", "terminal", "shell", "xterm.js"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Web Environment",
+  "Framework :: Django",
+  "Framework :: Django :: 4.2",
+  "Framework :: Django :: 5.0",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+]
 exclude = [
   "django_admin_shellx/static/django_admin_shellx/css/terminal.css",
   "django_admin_shellx/static/django_admin_shellx/js/terminal.js",
@@ -114,6 +129,7 @@ blank_line_after_tag = "load,extends"
 close_void_tags = true
 format_css = true
 format_js = true
+preserve_blank_line = true
 # TODO: remove T002 when fixed https://github.com/Riverside-Healthcare/djLint/issues/687
 ignore = "H006,H030,H031,T002"
 include = "H017,H035"
