@@ -26,11 +26,24 @@ Add `django_admin_shellx`, `channels` or `daphne` and `django_admin_shellx_custo
 
 ```python
 INSTALLED_APPS = [
-    `daphne`, # If you are using daphne, import it first
+    'daphne', # If you are using daphne, import it first
     # ...
     'django_admin_shellx',
     # ...
 ]
+
+ASGI_APPLICATION = "config.asgi.application"
+
+# Optional
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [env("REDIS_URL")],
+        },
+    },
+}
+```
 
 Since the package uses websockets you'll need to add the url patterns to your ASGI application:
 
@@ -86,7 +99,6 @@ application = ProtocolTypeRouter(
 
 Note: Daphne replaces `runserver` to run as a ASGI application. If you are using Daphne, you'll need to import it first in your ASGI application.
 
-```bash
 
 Lastly, we'll need to add the custom admin to add terminal links to the admin by using a custom admin class, add the following to your `INSTALLED_APPS`:
 
