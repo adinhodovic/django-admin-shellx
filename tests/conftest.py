@@ -53,8 +53,8 @@ def user_client(user):  # pylint: disable=redefined-outer-name
 class DefaultTimeoutWebsocketCommunicator(WebsocketCommunicator):
     """WebsocketCommunicator that provides a configurable default timeout."""
 
-    timeout = 3
-    """Default timeout to use when one is not supplied."""
+    # Default timeout to use when one is not supplied.
+    timeout = 5
 
     async def connect(self, timeout=None):  # pylint: disable=[signature-differs]
         """
