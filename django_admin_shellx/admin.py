@@ -18,7 +18,7 @@ class TerminalCommandAdmin(admin.ModelAdmin):
             path(
                 "terminal/",
                 self.admin_site.admin_view(TerminalView.as_view()),
-                name="terminal",
+                name="django_admin_shellx_terminalcommand_terminal",
             ),
         )
         return urls

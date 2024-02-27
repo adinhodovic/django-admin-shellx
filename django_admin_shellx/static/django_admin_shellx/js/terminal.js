@@ -262,13 +262,12 @@ copyButtons.forEach((button) => {
   button.addEventListener("click", copyTextToClipboard);
 });
 
-var commandHistoryTabs = document.querySelectorAll("#djw_command_history_tab");
+var commandHistoryTabs = document.querySelectorAll(".djw_command_history_tab");
 commandHistoryTabs.forEach((button) => {
   // Event listener that removes the class tab-active
   button.addEventListener("click", function (event) {
     var tab = event.target;
-    var tabs = document.querySelectorAll("#djw_command_history_tab");
-    tabs.forEach((tab) => {
+    commandHistoryTabs.forEach((tab) => {
       tab.classList.remove("tab-active");
     });
     var tables = document.querySelectorAll(".djw_command_history_table");

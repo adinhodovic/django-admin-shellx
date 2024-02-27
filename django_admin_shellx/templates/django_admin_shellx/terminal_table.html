@@ -1,0 +1,36 @@
+{% load admin_urls static %}
+
+{% if commands %}
+  <tr>
+    <th>Command</th>
+    <th>Prompt</th>
+    <th>Favorite</th>
+    <th>Created By</th>
+    <th>Execution Count</th>
+    <th>Actions</th>
+  </tr>
+  {% for command in commands %}
+    <tr>
+      <td class="font-bold">{{ command.command }}</td>
+      <td>{{ command.prompt }}</td>
+      <td>{{ command.favorite }}</td>
+      <td>{{ command.created_by }}</td>
+      <td class="font-bold">{{ command.execution_count }}</td>
+      <td>
+        <div class="flex gap-2">
+          <button class="btn btn-sm btn-neutral"
+                  onclick="location.href='{% url 'admin:django_admin_shellx_terminalcommand_change' command.id %}'">
+            Edit
+          </button>
+          <button class="btn btn-sm btn-neutral"
+                  id="djw_copy_command"
+                  data-command="{{ command.command }}">Copy</button>
+          <button data-prompt="{{ command.prompt }}"
+                  class="btn btn-sm btn-neutral"
+                  id="djw_execute_command"
+                  data-command="{{ command.command }}">Execute</button>
+        </div>
+      </td>
+    </tr>
+  {% endfor %}
+{% endif %}

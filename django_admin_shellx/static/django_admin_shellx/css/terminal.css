@@ -13,6 +13,10 @@ img {
   padding: 1rem;
 }
 
+.h-95 {
+  height: 95%;
+}
+
 /* Override Django default admin content width */
 .dashboard #content {
   width: unset;
