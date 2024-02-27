@@ -87,7 +87,7 @@ class TerminalConsumer(WebsocketConsumer):
             self.close(4401)
             return
 
-        if getattr(settings, "DJANGO_ADMIN_SHELLX_SUPERUSER_ONLY", False):
+        if getattr(settings, "DJANGO_ADMIN_SHELLX_SUPERUSER_ONLY", True):
             if not self.user.is_superuser:
                 self.close(4403)
                 return

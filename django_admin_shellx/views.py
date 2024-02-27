@@ -12,9 +12,8 @@ class TerminalView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
 
     def test_func(self):
         super_user_required = getattr(
-            settings, "DJANGO_ADMIN_SHELLX_SUPERUSER_ONLY", False
+            settings, "DJANGO_ADMIN_SHELLX_SUPERUSER_ONLY", True
         )
-        self.super_user_required = super_user_required
 
         if super_user_required and not self.request.user.is_superuser:
             return False
