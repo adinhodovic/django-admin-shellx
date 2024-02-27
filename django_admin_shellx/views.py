@@ -46,7 +46,6 @@ class TerminalView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
 
         search = self.request.GET.get("search", None)
         if search:
-            print(search + "Adin")
             commands = commands.filter(command__icontains=search)
 
         commands = commands[:20]

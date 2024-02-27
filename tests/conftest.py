@@ -1,5 +1,6 @@
 import pytest
 from channels.testing import WebsocketCommunicator
+from django import test
 from django.contrib.auth.models import User  # pylint: disable=imported-auth-user
 
 from .factories import UserFactory
@@ -30,6 +31,22 @@ def superuser_logged_in(user_logged_in):  # pylint: disable=redefined-outer-name
     user_logged_in.is_superuser = True
     user_logged_in.save()
     return user_logged_in
+
+
+@pytest.fixture
+def admin_client(admin_user):
+    client = test.Client()
+    client.force_login(admin_user)
+    setattr(client, "user", admin_user)
+    return client
+
+
+@pytest.fixture
+def user_client(user):  # pylint: disable=redefined-outer-name
+    client = test.Client()
+    client.force_login(user)
+    setattr(client, "user", user)
+    return client
 
 
 # Increase the timeout for the WebsocketCommunicator
