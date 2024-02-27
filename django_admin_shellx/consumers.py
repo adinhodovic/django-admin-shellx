@@ -129,9 +129,10 @@ class TerminalConsumer(WebsocketConsumer):
             self.child_pid = None
 
     def disconnect(self, code):
-        """
-        Called when a WebSocket connection is closed.
-        """
+        if self.subprocess is not None:
+            self.subprocess.kill()
+            self.subprocess = None
+            self.child_pid = None
 
     def map_terminal_prompt(self, terminal_prompt):
 
