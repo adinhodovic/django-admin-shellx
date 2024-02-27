@@ -54,8 +54,6 @@ const url =
   terminalSession.toString() +
   "/";
 
-console.log(url);
-
 function connect() {
   ws = new WebSocket(url);
 

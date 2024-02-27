@@ -2,17 +2,18 @@
 
 A Django Web Shell using Xterm.js and Django Channels.
 
-Note: This package depends on websockets therefore you'll need to use an ASGI application to use it.
+Note: This package depends on websockets therefore you'll need to use an ASGI application to use it. If you are not using Django channels then read through the official [Channels' documentation on installing Channels](https://channels.readthedocs.io/en/latest/installation.html), also see the [Channels' documentation on running ASGI applications](https://channels.readthedocs.io/en/latest/deploying.html).
 
 ## Features
 
 - Fully responsive terminal using Xterm.js.
-- Authentication with Django auth, configurable to allow only superusers.
-- The commands tied to a user.
-- Saves command in a new model and create favorite commands.
 - Accessible through the admin.
-- LogEntry of all commands ran.
+- Authentication with Django auth, configurable to allow only superusers.
+- The commands written are tied to a user.
+- Saves command in a new model and create favorite commands.
 - Filterable command history.
+- LogEntry of all commands ran.
+- Custom admin site to add Terminal links to the admin.
 
 ## Installation
 
@@ -26,18 +27,33 @@ Add `django_admin_shellx`, `channels` or `daphne` and `django_admin_shellx_custo
 
 ```python
 INSTALLED_APPS = [
-    `daphne`, # If you are using daphne, import it first
+    'daphne', # If you are using daphne, import it first
     # ...
     'django_admin_shellx',
     # ...
 ]
+```
+
+Add your ASGI application to your settings:
+
+```python
+ASGI_APPLICATION = "config.asgi.application"
+
+# Optional
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [env("REDIS_URL")],
+        },
+    },
+}
+```
 
 Since the package uses websockets you'll need to add the url patterns to your ASGI application:
 
 ```python
-
 ...
-
 from django_admin_shellx.urls import websocket_urlpatterns
 
 # pylint: disable=unused-import,wrong-import-position
@@ -53,7 +69,7 @@ application = ProtocolTypeRouter(
 )
 ```
 
-If you do not have an ASGI application, you'll need to create one. You can use the `channels` package to do so.:
+If you do not have an ASGI application, you'll need to create one. You can use the `channels` package to do so:
 
 ```python
 # settings/asgi.py
@@ -86,9 +102,7 @@ application = ProtocolTypeRouter(
 
 Note: Daphne replaces `runserver` to run as a ASGI application. If you are using Daphne, you'll need to import it first in your ASGI application.
 
-```bash
-
-Lastly, we'll need to add the custom admin to add terminal links to the admin by using a custom admin class, add the following to your `INSTALLED_APPS`:
+Lastly, we'll need to use a custom admin site to add terminal links to the admin, add the following to your `INSTALLED_APPS`:
 
 ```python
 installed_apps = [
@@ -97,7 +111,7 @@ installed_apps = [
 ]
 ```
 
-The above is optional and only adds a `view` button to the admin that links to the shell. Otherwise, there will not be a link since it's not a Model and can not be added to the admin. The terminal will either be accessible through the path `/admin/django_admin_shellx/terminalcommand/terminal/` or through the link in the admin.
+The above is optional and only adds a `view` button to the admin that links to the terminal. Otherwise, there will not be a link since it's not a model and can not be added to the admin. The terminal will either be accessible through the path `/admin/django_admin_shellx/terminalcommand/terminal/` and if you use the custom admin site, it will be accessible through a link in the admin.
 
 ## Usage
 
@@ -107,7 +121,9 @@ Each command is saved in the database and can be accessed through the admin. You
 
 ### ASGI Notes
 
-In the guide above `daphne` is used as the ASGI application and this will replace the command `runserver` to run as a ASGI application. In production you'll need to run `daphne` instead of `gunicorn` to use the websockets. An example is shown below:
+As mentioned previously, read through the official [Channels' documentation on installing Channels](https://channels.readthedocs.io/en/latest/installation.html), also see the [Channels' documentation on running ASGI applications](https://channels.readthedocs.io/en/latest/deploying.html). I'll add small snippets to help you get started.
+
+In the guide above `daphne` is used as the ASGI application and this will replace the command `runserver` to run as a ASGI application. In production, you'll need to run `daphne` instead of `gunicorn` to use the websockets. An example is shown below:
 
 ```bash
 daphne config.asgi:application -b 127.0.0.1 -p 80
@@ -117,8 +133,14 @@ Alternatively, you can run your ASGI application on a separate port and run your
 
 ```bash
 daphne config.asgi:application -b 127.0.0.1 -p 8001
-./manage.py runserver -p 8000
+gunicorn -b 127.0.0.1:80 config.wsgi
+```
 
+You can also replace `daphne` with `channels` if you want to for example use `runserver_plus` which does not work with `daphne`. Then, you'll need to run both an ASGI and WSGI application locally.
+
+```bash
+./manage.py runserver -p 8000
+daphne config.asgi:application -b 127.0.0.1 -p 8001
 ```
 
 ### Settings
