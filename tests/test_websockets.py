@@ -69,17 +69,17 @@ async def test_websocket_send_command(settings, superuser_logged_in):
     connected, _ = await communicator.connect()
     assert connected
 
-    # Ensure we go past the initial bash messages returned (shell startup)
-    await communicator.receive_from()
-
     await communicator.send_to(
         text_data=json.dumps({"action": "input", "data": {"message": "ls\r"}})
     )
 
-    # Command returned from the bash command
-    await communicator.receive_from()
-
+    # Responses can go in multiple messages, so we need to wait for all of them
+    # Expecting 4 messages from shell
     response = await communicator.receive_from()
+    response += await communicator.receive_from()
+    response += await communicator.receive_from()
+    response += await communicator.receive_from()
+
     assert "LICENSE" in response
 
     await communicator.disconnect()
