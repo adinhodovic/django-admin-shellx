@@ -2,7 +2,12 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core.exceptions import PermissionDenied
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404
+from django.utils.html import format_html, mark_safe
 from django.views.generic.base import TemplateView
 
 from .models import TerminalCommand
@@ -84,3 +89,27 @@ class TerminalView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         context["log_entries"] = log_entries
 
         return context
+
+
+@login_required
+def toggle_favorite(request, pk):
+    instance = get_object_or_404(TerminalCommand, pk=pk)
+
+    super_user_required = getattr(settings, "DJANGO_ADMIN_SHELLX_SUPERUSER_ONLY", True)
+    if super_user_required and not request.user.is_superuser:
+        raise PermissionDenied("Only superuser can toggle favorite")
+
+    if request.method == "GET":
+        # Toggle the 'favorite' field
+        instance.favorite = not instance.favorite
+        instance.save()
+
+        color = "text-yellow-500" if instance.favorite else ""
+        return HttpResponse(
+            format_html(  # pyright: ignore [reportArgumentType]
+                "<div class='tooltip' data-tip='Favorite Command'><i id='djw_favorite_icon' class='fa fa-star {}'></i></div>",
+                mark_safe(color),
+            )
+        )
+
+    return JsonResponse({"status": "error", "message": "Only GET requests are allowed"})

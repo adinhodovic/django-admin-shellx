@@ -74,3 +74,48 @@ def test_list_user_commands(admin_client):
     assert res.context["commands"]
     assert len(res.context["commands"]) == 1
     assert res.context["commands"][0].command == tc.command
+
+
+def test_toggle_favorite(admin_client):
+    tc = TerminalCommandFactory()
+    res = admin_client.get(
+        reverse(
+            "admin:django_admin_shellx_terminalcommand_toggle_favorite",
+            kwargs={"pk": tc.id},
+        )
+    )
+
+    assert res.status_code == 200
+    assert "text-yellow-500" in str(res.content)
+    tc.refresh_from_db()
+    assert tc.favorite
+
+
+def test_toggle_favorite_user(user_client):
+    user_client.user.is_staff = True
+    user_client.user.save()
+    tc = TerminalCommandFactory()
+    res = user_client.get(
+        reverse(
+            "admin:django_admin_shellx_terminalcommand_toggle_favorite",
+            kwargs={"pk": tc.id},
+        )
+    )
+
+    assert res.status_code == 403
+
+
+def test_toggle_favorite_anonymous(client):
+    tc = TerminalCommandFactory()
+    res = client.get(
+        reverse(
+            "admin:django_admin_shellx_terminalcommand_toggle_favorite",
+            kwargs={"pk": tc.id},
+        )
+    )
+
+    assert res.status_code == 302
+    assert (
+        res.url
+        == "/admin/login/?next=/admin/django_admin_shellx/terminalcommand/toggle_favorite/1/"
+    )
