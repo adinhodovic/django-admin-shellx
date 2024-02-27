@@ -41,8 +41,7 @@
                   hx-get="{% url 'admin:django_admin_shellx_terminalcommand_toggle_favorite' pk=command.id %}"
                   hx-swap="innerHTML">
             <div class="tooltip" data-tip="Favorite Command">
-              <i id="djw_favorite_icon"
-                 class="fa fa-star {% if command.favorite %}text-yellow-400{% endif %}"></i>
+              <i class="fa fa-star {% if command.favorite %}text-yellow-400{% endif %}"></i>
             </div>
           </button>
         </div>

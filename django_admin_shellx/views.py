@@ -104,10 +104,10 @@ def toggle_favorite(request, pk):
         instance.favorite = not instance.favorite
         instance.save()
 
-        color = "text-yellow-500" if instance.favorite else ""
+        color = "text-yellow-400" if instance.favorite else ""
         return HttpResponse(
             format_html(  # pyright: ignore [reportArgumentType]
-                "<div class='tooltip' data-tip='Favorite Command'><i id='djw_favorite_icon' class='fa fa-star {}'></i></div>",
+                "<div class='tooltip' data-tip='Favorite Command'><i class='fa fa-star {}'></i></div>",
                 mark_safe(color),
             )
         )
