@@ -103,7 +103,7 @@ async def test_command_creates_objects(superuser_logged_in):
 
     # Test sending text
     await communicator.send_to(
-        text_data=json.dumps({"action": "save_history", "data": {"command": ">>>ls"}})
+        text_data=json.dumps({"action": "save_history", "data": {"command": ">>> ls"}})
     )
     await communicator.receive_from()
 
