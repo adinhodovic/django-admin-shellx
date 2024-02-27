@@ -140,7 +140,7 @@ class TerminalConsumer(WebsocketConsumer):
         prompt = None
 
         # pattern >>> TerminalCommand.objects.all()
-        match_1 = re.match(r">>>(.*)", terminal_prompt)
+        match_1 = re.match(r">>> (.*)", terminal_prompt)
         # pattern In [2]: TerminalCommand.objects.all()'
         match_2 = re.match(r"In \[\w\]: (.*)", terminal_prompt)
         # pattern root@test-app-bf4fdfb6-726qh:/app# echo 'hello world'
