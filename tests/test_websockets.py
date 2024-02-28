@@ -1,4 +1,5 @@
 import json
+from asyncio import sleep
 
 import pytest
 
@@ -72,6 +73,7 @@ async def test_websocket_send_command(settings, superuser_logged_in):
     await communicator.send_to(
         text_data=json.dumps({"action": "input", "data": {"message": "ls\r"}})
     )
+    await sleep(2)
 
     # Responses can go in multiple messages, so we need to wait for all of them
     # Expecting 4 messages from shell
@@ -79,14 +81,8 @@ async def test_websocket_send_command(settings, superuser_logged_in):
     response += await communicator.receive_from()
     # TODO(adinhodovic): This is a hack, we should wait for the response to be complete, which is
     # tricky due to terminal output
-    try:
-        response += await communicator.receive_from()
-    except TimeoutError:
-        pass
-    try:
-        response += await communicator.receive_from()
-    except TimeoutError:
-        pass
+    response += await communicator.receive_from()
+    response += await communicator.receive_from()
 
     assert "LICENSE" in response
 

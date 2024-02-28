@@ -86,7 +86,7 @@ def test_toggle_favorite(admin_client):
     )
 
     assert res.status_code == 200
-    assert "text-yellow-500" in str(res.content)
+    assert "text-yellow-400" in str(res.content)
     tc.refresh_from_db()
     assert tc.favorite
 

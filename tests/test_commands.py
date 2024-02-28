@@ -1,4 +1,5 @@
 import json
+from asyncio import sleep
 from asyncio.exceptions import CancelledError
 
 import pytest
@@ -68,8 +69,8 @@ async def test_closes_connection_on_exit(settings, superuser_logged_in):
     response = await communicator.receive_from()
     assert response == '{"message": "exit"}'
 
-    # Wait 5 seconds for the shell to close
-    await communicator.wait(1)
+    # Wait for the shell to close
+    await communicator.wait()
 
     await communicator.send_to(
         text_data=json.dumps({"action": "input", "data": {"message": "ls"}})
@@ -144,7 +145,7 @@ async def test_command_increments_execution_count(settings, superuser_logged_in)
     # Test sending text
     await communicator.send_to(text_data=json_data)
     await communicator.send_to(text_data=json_data)
-    await communicator.wait(1)
+    await sleep(1)
 
     log_entry_count, _ = await get_log_entry()
     terminal_command_count, terminal_command = await get_terminal_command()
