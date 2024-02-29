@@ -93,7 +93,7 @@ WEBPACK_LOADER = {
 }
 
 DJANGO_ADMIN_SHELLX_SUPERUSER_ONLY = True
-DJANGO_ADMIN_SHELLX_COMMAND = [
+DJANGO_ADMIN_SHELLX_COMMANDS = [
     ["./manage.py", "shell_plus"],
     ["./manage.py", "shell"],
     ["/bin/bash"],

@@ -136,13 +136,16 @@ class TerminalConsumer(WebsocketConsumer):
 
     def map_terminal_prompt(self, terminal_prompt):
 
+        if "reverse-i-search" in terminal_prompt or "I-search" in terminal_prompt:
+            return "DJWShell Search", None
+
         command = None
         prompt = None
 
         # pattern >>> TerminalCommand.objects.all()
         match_1 = re.match(r">>> (.*)", terminal_prompt)
         # pattern In [2]: TerminalCommand.objects.all()'
-        match_2 = re.match(r"In \[\w\]: (.*)", terminal_prompt)
+        match_2 = re.match(r"In \[.*\]: (.*)", terminal_prompt)
         # pattern root@test-app-bf4fdfb6-726qh:/app# echo 'hello world'
         match_3 = re.match(r"^(\S+\s+[^$]+\$)\s+(.*)", terminal_prompt)
         # [adin@adin test]$ echo 'hello world'
@@ -169,6 +172,9 @@ class TerminalConsumer(WebsocketConsumer):
 
     def save_command_history(self, command):
         command, prompt = self.map_terminal_prompt(command)
+
+        if command == "DJWShell Search":
+            return
 
         if not command:
             logging.warning("No command to save")
