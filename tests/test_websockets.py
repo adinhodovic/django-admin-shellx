@@ -73,7 +73,7 @@ async def test_websocket_send_command(settings, superuser_logged_in):
     await communicator.send_to(
         text_data=json.dumps({"action": "input", "data": {"message": "ls\r"}})
     )
-    await sleep(2)
+    await sleep(3)
 
     # Responses can go in multiple messages, so we need to wait for all of them
     # Expecting 4 messages from shell

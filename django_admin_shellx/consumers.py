@@ -137,43 +137,43 @@ class TerminalConsumer(WebsocketConsumer):
     def map_terminal_prompt(self, terminal_prompt):
 
         if "reverse-i-search" in terminal_prompt or "I-search" in terminal_prompt:
-            return "DJWShell Search", None
+            return None, None, True
 
+        mapped = False
         command = None
         prompt = None
 
         # pattern >>> TerminalCommand.objects.all()
-        match_1 = re.match(r">>> (.*)", terminal_prompt)
+        match_1 = re.match(r">>> ?(.*)", terminal_prompt)
         # pattern In [2]: TerminalCommand.objects.all()'
-        match_2 = re.match(r"In \[.*\]: (.*)", terminal_prompt)
-        # pattern root@test-app-bf4fdfb6-726qh:/app# echo 'hello world'
-        match_3 = re.match(r"^(\S+\s+[^$]+\$)\s+(.*)", terminal_prompt)
+        match_2 = re.match(r"In \[.*\]: ?(.*)", terminal_prompt)
         # [adin@adin test]$ echo 'hello world'
-        match_4 = re.match(r"^.*@[^:]+:(?:\/[^#]+)*# (.+)$", terminal_prompt)
+        match_3 = re.match(r".*[#|$] ?(.+)", terminal_prompt)
 
-        if match_1 and match_1.group(1):
+        if match_1:
             command = match_1.group(1)
             prompt = "django-shell"
-        elif match_2 and match_2.group(1):
+            mapped = True
+        elif match_2:
             command = match_2.group(1)
             prompt = "django-shell"
-        elif match_3 and match_3.group(2):
-            command = match_3.group(2)
+            mapped = True
+        elif match_3:
+            command = match_3.group(1)
             prompt = "shell"
-        elif match_4 and match_4.group(1):
-            command = match_4.group(1)
-            prompt = "shell"
+            mapped = True
         else:
-            logging.warning(
-                "Could not extract command from prompt: %s", terminal_prompt
-            )
+            logging.debug("Could not extract command from prompt: %s", terminal_prompt)
 
-        return command, prompt
+        return command, prompt, mapped
 
     def save_command_history(self, command):
-        command, prompt = self.map_terminal_prompt(command)
+        command, prompt, mapped = self.map_terminal_prompt(command)
 
-        if command == "DJWShell Search":
+        # Ignore successful mappings but empty command
+        # e.g user pressing enter or using search history
+        if not command and mapped:
+            logging.debug("Ignoring empty command")
             return
 
         if not command:
