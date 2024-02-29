@@ -252,7 +252,7 @@ terminal.attachCustomKeyEventHandler((arg) => {
 });
 
 function copyTextToClipboard(event) {
-  navigator.clipboard.writeText(event.target.dataset.command);
+  navigator.clipboard.writeText(event.currentTarget.dataset.command);
 }
 
 var copyButtons = document.querySelectorAll("#djw_copy_command");
@@ -282,8 +282,8 @@ commandHistoryTabs.forEach((button) => {
 });
 
 function executeCommand(event) {
-  const command = event.target.dataset.command;
-  const prompt = event.target.dataset.prompt;
+  const command = event.currentTarget.dataset.command;
+  const prompt = event.currentTarget.dataset.prompt;
 
   if (command) {
     const json_data = JSON.stringify({
