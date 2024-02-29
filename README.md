@@ -59,7 +59,7 @@ application = ProtocolTypeRouter(
 Lastly, we'll need to use a custom admin site to add a link to the terminal, add the following to your `INSTALLED_APPS`:
 
 ```python
-installed_apps = [
+INSTALLED_APPS = [
     ...
     "django_admin_shellx",
     "django_admin_shellx_custom_admin.apps.CustomAdminConfig",
