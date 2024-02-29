@@ -7,6 +7,7 @@ import pty
 import re
 import select
 import shutil
+import signal
 import struct
 import subprocess
 import termios
@@ -124,15 +125,12 @@ class TerminalConsumer(WebsocketConsumer):
 
     def kill_pty(self):
         if self.subprocess is not None:
-            self.subprocess.kill()
+            os.killpg(os.getpgid(self.child_pid), signal.SIGTERM)
             self.subprocess = None
             self.child_pid = None
 
     def disconnect(self, code):
-        if self.subprocess is not None:
-            self.subprocess.kill()
-            self.subprocess = None
-            self.child_pid = None
+        self.kill_pty()
 
     def map_terminal_prompt(self, terminal_prompt):
 
