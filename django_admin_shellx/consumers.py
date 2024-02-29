@@ -72,8 +72,11 @@ class TerminalConsumer(WebsocketConsumer):
             self.subprocess = proc
             self.child_pid = proc.pid
             proc.wait()
+
             # Subprocess has finished, close the websocket
             # happens when process exits, either via user exiting using exit() or by error
+            self.subprocess = None
+            self.child_pid = None
             self.close(4030)
 
     def connect(self):
