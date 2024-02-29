@@ -181,7 +181,7 @@ class TerminalConsumer(WebsocketConsumer):
             return
 
         tc, _ = TerminalCommand.objects.get_or_create(
-            command=command, prompt=prompt, created_by=self.user
+            command=command, prompt=prompt, defaults={"created_by": self.user}
         )
         tc.execution_count += 1
         tc.save()
