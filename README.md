@@ -61,7 +61,18 @@ Lastly, we'll need to use a custom admin site to add a link to the terminal, add
 ```python
 installed_apps = [
     ...
-    'django_admin_shellx_custom_admin.apps.DjangoAdminShellXCustomAdminConfig',
+    "django_admin_shellx",
+    "django_admin_shellx_custom_admin.apps.CustomAdminConfig",
+]
+```
+
+Ensure to remove the default `admin` app from the `INSTALLED_APPS` if you are using the custom admin site.
+
+```python
+INSTALLED_APPS = [
+    ...
+    # 'django.contrib.admin',
+    ...
 ]
 ```
 
