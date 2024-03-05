@@ -8,7 +8,17 @@ from .models import TerminalCommand
 
 @admin.register(TerminalCommand)
 class TerminalCommandAdmin(admin.ModelAdmin):
+    readonly_fields = ("created", "modified")
     list_display = ("command", "created_by", "execution_count")
+    fields = (
+        "created",
+        "modified",
+        "prompt",
+        "command",
+        "created_by",
+        "execution_count",
+        "favorite",
+    )
 
     def get_urls(self):
 
