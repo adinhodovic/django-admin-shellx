@@ -1,4 +1,3 @@
-# chat/consumers.py
 import fcntl
 import json
 import logging
@@ -36,6 +35,7 @@ class TerminalConsumer(WebsocketConsumer):
     user = None
     subprocess = None
     authorized = False
+    connected = False
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -77,7 +77,9 @@ class TerminalConsumer(WebsocketConsumer):
             # happens when process exits, either via user exiting using exit() or by error
             self.subprocess = None
             self.child_pid = None
-            self.close(4030)
+            if self.connected:
+                self.connected = False
+                self.close(4030)
 
     def connect(self):
 
@@ -100,6 +102,7 @@ class TerminalConsumer(WebsocketConsumer):
             return
 
         if self.user.is_authenticated:
+            self.connected = True
             self.authorized = True
             self.accept()
 
@@ -133,6 +136,7 @@ class TerminalConsumer(WebsocketConsumer):
             self.child_pid = None
 
     def disconnect(self, code):
+        self.connected = False
         self.kill_pty()
 
     def map_terminal_prompt(self, terminal_prompt):
