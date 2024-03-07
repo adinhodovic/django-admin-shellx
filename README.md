@@ -40,21 +40,54 @@ INSTALLED_APPS = [
 ]
 ```
 
-Since the package uses websockets you'll need to add the url patterns to your ASGI application:
+The package uses websockets for real-time communication between a pseudo-shell on the server and
+Xterm.js in the browser. Django doesn't handle websockets natively, so we have to deploy a second WSGI server for
+this purpose.
+
+We will have to add an ASGI configuration file for the websocket server:
 
 ```python
-...
+import os
+
+from channels.auth import AuthMiddlewareStack
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.security.websocket import AllowedHostsOriginValidator
+from django.core.asgi import get_asgi_application
+
+# Follows the path of cookiecutter-django
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.production")
+
+# The ASGI application
+django_application = get_asgi_application()
+
+# Remember to import the urlpatters after the asgi application!
+# pylint: disable=wrong-import-position
 from django_admin_shellx.urls import websocket_urlpatterns
 
 application = ProtocolTypeRouter(
     {
-        "http": django_asgi_app,
         "websocket": AllowedHostsOriginValidator(
             AuthMiddlewareStack(URLRouter(websocket_urlpatterns))
         ),
     }
 )
 ```
+
+When running the server in production you'll have:
+
+1. A Django server which serves all of your traditional HTTP traffic (wsgi.py).
+2. A Websocket server which serves the terminal traffic (asgi.py).
+3. A reverse proxy which routes traditional traffic to the HTTP server and all websocket traffic
+   (**prefixed with /ws**) to your websocket server.
+
+To start the traditional server you'll use Gunicorn as usual.
+
+To start the websocket server you use [Daphne](https://github.com/django/daphne).
+
+```sh
+daphne config.asgi:application -b 0.0.0.0 -p 80
+```
+
 
 Lastly, we'll need to use a custom admin site to add a link to the terminal, add the following to your `INSTALLED_APPS`:
 
