@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.db import models
-from django.db.models.base import UniqueConstraint
 from model_utils.models import TimeStampedModel
 
 
@@ -19,7 +18,7 @@ class TerminalCommand(TimeStampedModel):
 
     class Meta(TimeStampedModel.Meta):
         constraints = [
-            UniqueConstraint(
+            models.UniqueConstraint(
                 fields=["command", "prompt"], name="unique_command_prompt"
             ),
         ]
