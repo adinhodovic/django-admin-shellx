@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "django-admin-shellx"
-version = "0.3.1"
+version = "0.3.2"
 description = "A Django Admin Shell"
 authors = ["Adin Hodovic <hodovicadin@gmail.com>"]
 license = "MIT"
@@ -47,7 +47,7 @@ packages = [
 python = "^3.9 || ^3.10 || ^3.11"
 Django = ">=4.* || >=5.*"
 channels = { extras = ["daphne"], version = "^4.0.0" }
-django-model-utils = "^4.4.0"
+django-model-utils = ">=4.* || >= 5.*"
 
 [tool.poetry.group.dev.dependencies]
 django-extensions = "^3.2.3"
