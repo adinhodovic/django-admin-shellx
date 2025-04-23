@@ -12,6 +12,9 @@ from django.views.generic.base import TemplateView
 
 from .models import TerminalCommand
 
+User = get_user_model()
+username_field = User.USERNAME_FIELD
+
 
 class TerminalView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
 
@@ -45,9 +48,10 @@ class TerminalView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         if favorite:
             commands = commands.filter(favorite=bool(favorite))
 
-        username = self.request.GET.get("username", None)
-        if username and username != "All":
-            commands = commands.filter(created_by__username=username)
+        current_username = self.request.GET.get("username", None)
+        if current_username and current_username != "All":
+            filter_kwargs = {f"created_by__{username_field}": current_username}
+            commands = commands.filter(**filter_kwargs)
 
         search = self.request.GET.get("search", None)
         if search:
@@ -56,18 +60,14 @@ class TerminalView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         commands = commands[:20]
         context["commands"] = commands
 
-        usernames = (
-            get_user_model()
-            .objects.filter(
-                id__in=TerminalCommand.objects.values_list("created_by_id").distinct()
-            )
-            .values_list("username", flat=True)
-        )
-        if self.request.user.username in usernames:
-            usernames = [self.request.user.username] + [
-                username
-                for username in usernames
-                if username != self.request.user.username
+        usernames = User.objects.filter(
+            id__in=TerminalCommand.objects.values_list(
+                "created_by_id", flat=True
+            ).distinct()
+        ).values_list(username_field, flat=True)
+        if current_username in usernames:
+            usernames = [current_username] + [
+                uname for uname in usernames if uname != current_username
             ]
         context["usernames"] = usernames
 
@@ -81,6 +81,7 @@ class TerminalView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         )
         for log in log_entries:
             log.user = user_model.objects.get(id=log.user_id)
+            log.user.username_value = log.user.get_username()
 
             tc = TerminalCommand.objects.filter(id=log.object_id).first()
             if tc:
