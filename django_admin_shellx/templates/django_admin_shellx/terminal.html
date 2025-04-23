@@ -142,7 +142,7 @@
                 <tr>
                   <td>{{ entry.action_time }}</td>
                   <td>
-                    <a href="{% url user_reverse_url entry.user.id %}">{{ entry.user.username }}</a>
+                    <a href="{% url user_reverse_url entry.user.id %}">{{ entry.user.username_value }}</a>
                   </td>
                   <td>
                     {% if entry.command %}
